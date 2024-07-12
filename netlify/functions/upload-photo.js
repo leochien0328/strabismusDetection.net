@@ -8,9 +8,9 @@ exports.handler = async function(event, context) {
         const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/octet-stream'
+                'Content-Type': 'application/json'
             },
-            body: raw_image_data
+            body: JSON.stringify({ image: raw_image_data })
         });
 
         const data = await response.json();
