@@ -9,7 +9,7 @@ $(document).ready(function() {
     $('#accesscamera').on('click', function() {
         Webcam.reset();
         Webcam.on('error', function() {
-            $('#photoModal').modal('hide');
+            //$('#photoModal').modal('hide');
             swal({
                 title: 'Warning',
                 text: 'Please give permission to access your webcam',
@@ -17,6 +17,7 @@ $(document).ready(function() {
             });
         });
         Webcam.attach('#my_camera');
+        $('#takephoto').removeClass('d-none').addClass('d-block');
     });
 
     $('#takephoto').on('click', take_snapshot);
@@ -46,23 +47,18 @@ $(document).ready(function() {
         fetch('https://app-bq9j.onrender.com', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/octet-stream'
+                'Content-Type': 'application/json'
             },
-            body: raw_image_data
+            body: JSON.stringify({ image: raw_image_data })
         })
         .then(response => response.json())
         .then(data => {
-            if (data.result === 'no_strabismus') {
+            if (data.result >3) {
                 $('#noStrabismusModal').modal('show');
-            } else if (data.result === 'possible_strabismus') {
-                $('#possibleStrabismusModal').modal('show');
-            } else {
-                swal({
-                    title: 'Error',
-                    text: 'Something went wrong',
-                    icon: 'error'
-                });
+            }  else {
+                $('#noStrabismusModal').modal('show');
             }
+            console.log('Solution:', data.solution);
         })
         .catch(error => {
             console.error('Error:', error);
