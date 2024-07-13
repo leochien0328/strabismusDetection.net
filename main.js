@@ -44,7 +44,7 @@ $(document).ready(function() {
     });
 
     function upload_photo(raw_image_data) {
-        fetch('https://app-bq9j.onrender.com/detect', {
+        fetch('https://api.render.com/deploy/srv-cq5p1gmehbks73bsc580?key=Uax3XalWwX', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
