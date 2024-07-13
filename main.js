@@ -44,7 +44,7 @@ $(document).ready(function() {
     });
 
     function upload_photo(raw_image_data) {
-        fetch('https://app-bq9j.onrender.com', {
+        fetch('https://app-bq9j.onrender.com/detect', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

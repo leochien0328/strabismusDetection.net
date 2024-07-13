@@ -2,15 +2,15 @@ const fetch = require('node-fetch');
 
 exports.handler = async function(event, context) {
     const raw_image_data = event.body;
-    const apiUrl = 'https://app-bq9j.onrender.com'; // 請替換為你的API URL
+    const apiUrl = 'https://app-bq9j.onrender.com/detect'; // 請替換為你的API URL
 
     try {
         const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/octect-stream'
             },
-            body: JSON.stringify({ image: raw_image_data })
+            body: raw_image_data
         });
 
         const data = await response.json();
