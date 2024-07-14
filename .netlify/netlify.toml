@@ -9,7 +9,7 @@ functions = "netlify/functions"
 
 [[redirects]]
 from ="/api/"
-to = "/.netlify/functions/:splat"
+to = "https://app-bq9j.onrender.com/:splat"
 status=200
 [build.environment]
 
