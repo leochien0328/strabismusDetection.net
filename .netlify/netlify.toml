@@ -11,6 +11,7 @@ functions = "netlify/functions"
 from ="/api/"
 to = "https://app-bq9j.onrender.com/:splat"
 status=200
+force =true
 [build.environment]
 
 [build.processing]

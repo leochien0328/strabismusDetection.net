@@ -35,15 +35,18 @@ $(document).ready(function() {
     });
 
     async function upload_photo(raw_image_data) {
+        console.log("Uploading photo...");  // 添加日志信息
         try {
-            const response = await fetch('https://app-bq9j.onrender.com', {
+            const response = await fetch('https://app-bq9j.onrender.com', {  // 确认 API URL 是否正确
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ image: raw_image_data })
             });
+            console.log("Response status:", response.status);  // 添加日志信息
             const data = await response.json();
+            console.log("Response data:", data);  // 添加日志信息
             if (data.result > 3) {
                 $('#noStrabismusModal').modal('show');
             } else {
@@ -75,4 +78,5 @@ $(document).ready(function() {
         $('#uploadphoto').removeClass('d-none').addClass('d-block');
     }
 });
+
 
