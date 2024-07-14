@@ -8,7 +8,7 @@ commandOrigin = "ui"
 functions = "netlify/functions"
 
 [[redirects]]
-from ="/api/"
+from ="/api/*"
 to = "https://app-bq9j.onrender.com/:splat"
 status=200
 force =true
