@@ -1,16 +1,16 @@
-functionsDirectory = "C:\\Users\\leoch\\OneDrive\\桌面\\test\\netlify\\functions"
-functionsDirectoryOrigin = "default"
-plugins = []
-headers = []
 redirects = []
 
 [build]
-publish = "C:\\Users\\leoch\\OneDrive\\桌面\\test\\build"
+publish = "build"
 publishOrigin = "ui"
 command = "npm run build"
 commandOrigin = "ui"
-functions = "C:\\Users\\leoch\\OneDrive\\桌面\\test\\netlify\\functions"
+functions = "netlify/functions"
 
+[[redirects]]
+from ="/api/"
+to = "/.netlify/functions/:splat"
+status=200
 [build.environment]
 
 [build.processing]
@@ -26,5 +26,5 @@ functions = "C:\\Users\\leoch\\OneDrive\\桌面\\test\\netlify\\functions"
 [build.services]
 
 [functions]
-
+node_bundler="esbuild"
 [functions."*"]
