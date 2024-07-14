@@ -7,7 +7,7 @@ const app = express();
 app.use(cors());
 
 app.use('/api', createProxyMiddleware({
-    target: 'https://app-bq9j.onrender.com', // 替换为你的 API URL
+    target: 'https://strabismusdetection-net.onrender.com/', // 替换为你的 API URL
     changeOrigin: true,
     pathRewrite: {
         '^/api': '', // 重写路径，使其与目标路径匹配

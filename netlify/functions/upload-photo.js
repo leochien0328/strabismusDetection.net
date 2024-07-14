@@ -2,7 +2,7 @@ const fetch = require('node-fetch');
 
 exports.handler = async function(event, context) {
     const raw_image_data = event.body;
-    const apiUrl = 'https://app-bq9j.onrender.com'; // 請替換為你的API URL
+    const apiUrl = 'https://strabismusdetection-net.onrender.com/'; // 請替換為你的API URL
 
     try {
         const response = await fetch(apiUrl, {
