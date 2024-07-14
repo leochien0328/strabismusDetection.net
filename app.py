@@ -4,7 +4,6 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import math
-import base64
 
 app = Flask(__name__)
 CORS(app)
@@ -34,6 +33,10 @@ def detect_iris(image):
             (r_cx, r_cy), r_radius = cv2.minEnclosingCircle(mesh_points[RIGHT_IRIS])
             center_left = np.array([l_cx, l_cy], dtype=np.int32)
             center_right = np.array([r_cx, r_cy], dtype=np.int32)
+            cv2.circle(image, center_left, int(l_radius), (255, 0, 255), 2, cv2.LINE_AA)
+            cv2.circle(image, center_right, int(r_radius), (255, 0, 255), 2, cv2.LINE_AA)
+            cv2.circle(image, (int(l_cx), int(l_cy)), 2, (0, 0, 255), -1)
+            cv2.circle(image, (int(r_cx), int(r_cy)), 2, (0, 0, 255), -1)
             return [l_cx, l_cy, r_cx, r_cy], mesh_points
 
         return None, None
@@ -79,14 +82,11 @@ def home():
 
 @app.route('/detect', methods=['POST'])
 def detect():
-    data = request.get_json()
-    if 'image' not in data:
-        return jsonify({"error": "No image data provided"}), 400
+    file = request.files['file']
+    if not file:
+        return jsonify({"error": "No file uploaded"}), 400
 
-    image_data = data['image']
-    image_bytes = base64.b64decode(image_data)
-    image = cv2.imdecode(np.frombuffer(image_bytes, np.uint8), cv2.IMREAD_COLOR)
-    
+    image = cv2.imdecode(np.fromstring(file.read(), np.uint8), cv2.IMREAD_UNCHANGED)
     iris_coords, mesh_points = detect_iris(image)
     if not iris_coords:
         return jsonify({"error": "No face detected"}), 400
