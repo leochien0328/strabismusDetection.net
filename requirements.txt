@@ -1,0 +1,9 @@
+﻿Flask==3.0.3
+Flask-Cors==4.0.1
+matplotlib==3.9.1
+mediapipe==0.10.14
+numpy==1.26.4
+opencv-contrib-python==4.10.0.84
+opencv-python==4.9.0.80
+pillow==10.4.0
+gunicorn
