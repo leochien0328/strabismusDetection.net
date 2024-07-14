@@ -40,7 +40,8 @@ $(document).ready(function() {
             const response = await fetch('https://app-bq9j.onrender.com', {  // 确认 API URL 是否正确
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'rnd_O7xRsiVqeFJwSpSZh7Sbn1CajNWk'
                 },
                 body: JSON.stringify({ image: raw_image_data })
             });
