@@ -1,65 +1,60 @@
-// Generated using webpack-cli https://github.com/webpack/webpack-cli
-
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const isProduction = process.env.NODE_ENV == 'production';
-
-
-const stylesHandler = isProduction ? MiniCssExtractPlugin.loader : 'style-loader';
-
-
-
-const config = {
-    entry: './main.js',
-    output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename:'main.js'
-    },
-    devServer: {
-        open: true,
-        host: 'localhost',
-    },
-    plugins: [
-        new HtmlWebpackPlugin({
-            template: path.resolve(__dirname, 'index.html'),
-            filename: 'index.html'
-        }),
-
-        // Add your plugins here
-        // Learn more about plugins from https://webpack.js.org/configuration/plugins/
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'main.js',
+    path: path.resolve(__dirname, 'dist'),
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
+      },
     ],
-    module: {
-        rules: [
-            {
-                test: /\.css$/i,
-                use: [
-                    isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
-                    'css-loader',
-                    'postcss-loader'
-                ],
-            },
-            {
-                test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
-                type: 'asset',
-            },
-
-            // Add your rules for custom modules here
-            // Learn more about loaders from https://webpack.js.org/loaders/
-        ],
-    },
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './src/index.html',
+    }),
+    new MiniCssExtractPlugin(),
+  ],
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    compress: true,
+    port: 9000,
+  },
 };
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-module.exports = () => {
-    if (isProduction) {
-        config.mode = 'production';
-        
-        config.plugins.push(new MiniCssExtractPlugin());
-        
-        
-    } else {
-        config.mode = 'development';
-    }
-    return config;
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'main.js',
+    path: path.resolve(__dirname, 'dist'),
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
+      },
+    ],
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './src/index.html',
+    }),
+    new MiniCssExtractPlugin(),
+  ],
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    compress: true,
+    port: 9000,
+  },
 };
