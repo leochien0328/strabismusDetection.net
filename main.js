@@ -48,7 +48,7 @@ $(document).ready(function() {
                 });
                 const data = await response.json();
                 if (data.result > 3) {
-                    $('#noStrabismusModal').modal('show');
+                    $('#possibleStrabismusModal').modal('show');
                 } else {
                     $('#noStrabismusModal').modal('show');
                 }
