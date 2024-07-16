@@ -12,9 +12,6 @@ app.use('/api', createProxyMiddleware({
         '^/api': '', // 重写路径，使其与目标路径匹配
     },
 }));
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-  });
 
 const port = process.env.PORT || 10000;
 app.listen(port, () => {
