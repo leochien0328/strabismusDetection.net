@@ -42,7 +42,7 @@ $(document).ready(function() {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': 'rnd_O7xRsiVqeFJwSpSZh7Sbn1CajNWk'  // 添加 API Key
+                        'Authorization': '70bdf7dde1abcefebd3f83b09656e340'  // 添加 API Key
                     },
                     body: JSON.stringify({ image: raw_image_data })
                 });
