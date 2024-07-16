@@ -38,7 +38,7 @@ $(document).ready(function() {
 
         async function upload_photo(raw_image_data) {
             try {
-                const response = await fetch('/api/', {  // 使用代理服务器的路径
+                const response = await fetch('/api', {  // 使用代理服务器的路径
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
