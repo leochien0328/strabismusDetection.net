@@ -76,9 +76,6 @@ def eye_coordinates(mesh_points):
 
     return [left_x_intersection, left_y_intersection, right_x_intersection, right_y_intersection]
 
-@app.route('/')
-def home():
-    return "Strabismus Detection API"
 
 @app.route('/detect', methods=['POST'])
 def detect():
@@ -99,6 +96,10 @@ def detect():
     return jsonify({
         "solution": solution
     })
+
+@app.route('/',methods=['POST'])
+def root_detect():
+    return detect()
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -8,10 +8,11 @@ commandOrigin = "ui"
 functions = "netlify/functions"
 
 [[redirects]]
-from ="/api"
-to = "https://strabismusdetection-net.onrender.com/"
-status=200
-force =true
+from = "/api/*"
+to = "https://strabismusdetection-net.onrender.com/:splat"
+status = 200
+force = true
+
 [build.environment]
 
 [build.processing]

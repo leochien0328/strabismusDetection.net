@@ -13,6 +13,10 @@ app.use('/api', createProxyMiddleware({
     },
 }));
 
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+});
+
 const port = process.env.PORT || 10000;
 app.listen(port, () => {
     console.log(`Proxy server running on port ${port}`);
