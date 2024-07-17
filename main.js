@@ -36,6 +36,12 @@ $(document).ready(function() {
             upload_photo(raw_image_data);
         });
 
+$(document).ready(function() {
+    var detailsButton = document.getElementById('detailsButton');
+    if (detailsButton) {
+        detailsButton.classList.add('singular');
+    }
+});
         async function upload_photo(raw_image_data) {
             try {
                 const response = await fetch('/api/upload-photo', {  // 使用代理服务器的路径
