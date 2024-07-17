@@ -1,3 +1,20 @@
 {
-	"siteId": "d0f76faf-be7d-49ad-ab68-5abce86fc47c"
+	"siteId": "d0f76faf-be7d-49ad-ab68-5abce86fc47c",
+	"geolocation": {
+		"data": {
+			"city": "Taipei",
+			"country": {
+				"code": "TW",
+				"name": "Taiwan"
+			},
+			"subdivision": {
+				"code": "TPE",
+				"name": "Taipei City"
+			},
+			"timezone": "Asia/Taipei",
+			"latitude": 25.0504,
+			"longitude": 121.5324
+		},
+		"timestamp": 1721225391385
+	}
 }

@@ -96,7 +96,25 @@ def detect():
     return jsonify({
         "solution": solution
     })
+@app.route('/api/upload-photo', methods=['POST'])
+def upload_photo():
+    file = request.files['file']  # 從請求中獲取文件
+    if not file:
+        return jsonify({"error": "No file uploaded"}), 400
 
+    image = cv2.imdecode(np.fromstring(file.read(), np.uint8), cv2.IMREAD_UNCHANGED)
+    iris_coords, mesh_points = detect_iris(image)
+    if not iris_coords:
+        return jsonify({"error": "No face detected"}), 400
+
+    eye_coords = eye_coordinates(mesh_points)
+    left_distance = math.sqrt((iris_coords[0] - eye_coords[0]) ** 2 + (iris_coords[1] - eye_coords[1]) ** 2)
+    right_distance = math.sqrt((iris_coords[2] - eye_coords[2]) ** 2 + (iris_coords[3] - eye_coords[3]) ** 2)
+    solution = abs(left_distance - right_distance)
+
+    return jsonify({
+        "solution": solution
+    })
 @app.route('/',methods=['POST'])
 def root_detect():
     return detect()
