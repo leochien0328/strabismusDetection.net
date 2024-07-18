@@ -4,7 +4,9 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import math
-
+import base64
+from io import BytesIO
+from PIL import Image
 app = Flask(__name__)
 CORS(app)
 
@@ -98,23 +100,16 @@ def detect():
     })
 @app.route('/api/upload-photo', methods=['POST'])
 def upload_photo():
-    file = request.files['file']  # 從請求中獲取文件
-    if not file:
-        return jsonify({"error": "No file uploaded"}), 400
-
-    image = cv2.imdecode(np.fromstring(file.read(), np.uint8), cv2.IMREAD_UNCHANGED)
-    iris_coords, mesh_points = detect_iris(image)
-    if not iris_coords:
-        return jsonify({"error": "No face detected"}), 400
-
-    eye_coords = eye_coordinates(mesh_points)
-    left_distance = math.sqrt((iris_coords[0] - eye_coords[0]) ** 2 + (iris_coords[1] - eye_coords[1]) ** 2)
-    right_distance = math.sqrt((iris_coords[2] - eye_coords[2]) ** 2 + (iris_coords[3] - eye_coords[3]) ** 2)
-    solution = abs(left_distance - right_distance)
-
-    return jsonify({
-        "solution": solution
-    })
+    if request.method == 'POST':
+        try:
+            image_data = request.json.get('image')
+            image = Image.open(BytesIO(base64.b64decode(image_data)))
+            image = np.array(image)
+            solution, dist_L, dist_R = detect_iris(image)
+            result = 1 if solution > 3 else 0
+            return jsonify({"result": result, "solution": solution, "dist_L": dist_L, "dist_R": dist_R}), 200
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
 @app.route('/', methods=['GET'])
 def get_hello():
     return 'Hello World!'
