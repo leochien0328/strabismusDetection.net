@@ -1,7 +1,7 @@
 import fetch from 'node-fetch'; // 导入 fetch 模块
-
-exports.handler = async function(event) {
-    const raw_image_data = event.body;
+import express from 'express';
+const app = express();
+export async function upload_photo(raw_image_data){
     const apiUrl = process.env.API_URL || 'https://strabismusdetection-net.onrender.com/api/upload-photo';
 
     try {
