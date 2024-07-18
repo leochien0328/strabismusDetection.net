@@ -28,23 +28,14 @@
   "homepage": "https://github.com/leochien0328/strabismusDetection.net#readme",
   "devDependencies": {
     "@webpack-cli/generators": "^3.0.7",
-    "html-webpack-plugin": "^5.6.0",
-    "mini-css-extract-plugin": "^2.9.0",
-    "webpack-cli": "^5.1.4",
-    "css-loader": "^6.5.1",
-    "webpack": "^5.64.4"
+    "html-webpack-plugin": "5.6.0",
+    "mini-css-extract-plugin": "2.9.0",
+    "webpack-cli": "5.1.4",
+    "css-loader": "6.5.1",
+    "webpack": "5.64.4"
   },
   "dependencies": {
     "express": "^4.17.1",
-    "flask": "^3.0.3",
-    "flask-cors": "^4.0.1",
-    "matplotlib": "^3.7.5",
-    "mediapipe": "^0.10.11",
-    "node-fetch": "^2.6.1",
-    "numpy": "^1.24.4",
-    "opencv-contrib-python": "^4.10.0.84",
-    "opencv-python": "^4.9.0.80",
-    "pillow": "^10.4.0",
-    "torch": "^2.3.1"
+    "node-fetch": "^2.6.1"
   }
 }
