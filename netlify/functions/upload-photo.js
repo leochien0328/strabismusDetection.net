@@ -1,13 +1,6 @@
 const fetch = require('node-fetch');
-const FormData = require('form-data');
-const { createProxyMiddleware } = require('http-proxy-middleware');
-const express = require('express');
-const app = express();
 
-app.use(express.json()); // 解析 JSON 格式的请求体
-app.use(express.urlencoded({ extended: true })); // 解析 URL 编码的请求体
-
-export async function handler(event, context) {
+exports.handler = async function(event, context) {
     const raw_image_data = event.body;
     const apiUrl = process.env.API_URL || 'https://strabismusdetection-net.onrender.com/';
 
