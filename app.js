@@ -19,12 +19,12 @@ app.use('/api', createProxyMiddleware({
     },
 }));
 
-app.post('/', (req, res) => {
+app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 app.post('/api/upload-photo', (req, res) => {
     const { image } = req.body;
-
+    console.log('Received image data:', image);
     // 在這裡進行相應的處理，例如圖片處理、斜視檢測等等
 
     // 返回處理結果，這裡假設您返回一個 JSON 對象

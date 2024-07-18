@@ -115,9 +115,36 @@ def upload_photo():
     return jsonify({
         "solution": solution
     })
+@app.route('/', methods=['GET'])
+def get_hello():
+    return 'Hello World!'
+
 @app.route('/',methods=['POST'])
-def root_detect():
-    return upload_photo()
+def post_root():
+    # 根据请求的 Content-Type 决定如何处理
+    if request.content_type == 'application/json':
+        # 处理 JSON 格式的请求体
+        data = request.json
+        # 在这里进行相应的处理，例如调用处理图片上传的函数
+        return upload_photo(data)
+    else:
+        # 处理其他格式的请求体，例如表单提交
+        image_file = request.files['file']
+        return upload_photo(image_file)
+
+def upload_photo(data):
+    # 在这里处理上传照片逻辑，根据请求的数据进行不同的处理
+    # 示例：假设 data 是 JSON 数据
+    if 'image' in data:
+        image_data = data['image']
+        # 进行相应的处理，例如图像处理、斜视检测等等
+        # 返回处理结果
+        return jsonify({
+            "message": "Image uploaded and processed successfully",
+            "result": "your_result_here"
+        })
+    else:
+        return jsonify({"error": "No image uploaded"}), 400
 
 if __name__ == "__main__":
     app.run(debug=True,port=10000)
