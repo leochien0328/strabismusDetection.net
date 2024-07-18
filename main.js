@@ -36,12 +36,6 @@ $(document).ready(function() {
             upload_photo(raw_image_data);
         });
 
-$(document).ready(function() {
-    var detailsButton = document.getElementById('detailsButton');
-    if (detailsButton) {
-        detailsButton.classList.add('singular');
-    }
-});
         async function upload_photo(raw_image_data) {
             try {
                 const response = await fetch('/api/upload-photo', {  // 使用代理服务器的路径
@@ -88,5 +82,18 @@ $(document).ready(function() {
     }
 });
 
+// 確保在 DOM 加載完畢後再執行相關操作
+document.addEventListener('DOMContentLoaded', function() {
+    // 取得 detailsButton 元素
+    const detailsButton = document.getElementById('detailsButton');
+
+    // 確認元素是否存在
+    if (detailsButton) {
+        // 如果存在，則添加 'singular' 類別
+        detailsButton.classList.add('singular');
+    } else {
+        console.error('Element with id "detailsButton" not found.');
+    }
+});
 
 
