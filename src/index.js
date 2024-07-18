@@ -1,5 +1,5 @@
 // Importing necessary modules and styles
-import '../styles.css'; // If you have any CSS files
+import '../style.css'; // If you have any CSS files
 import { upload_photo } from '../netlify/functions/upload-photo.js';
 
 // You can initialize your main functionality here
