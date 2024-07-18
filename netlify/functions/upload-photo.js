@@ -1,4 +1,5 @@
-const fetch = require('node-fetch');
+import express from 'express';
+const app = express();
 
 exports.handler = async function(event, context) {
     const raw_image_data = event.body;
