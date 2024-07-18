@@ -3,9 +3,9 @@ redirects = []
 [build]
 publish = "build"
 publishOrigin = "dist"
-command = "npm install && npm run build"
+command = "npm run build"
 commandOrigin = "ui"
-functions = "functions"
+functions = "netlify/functions"
 
 [[redirects]]
 from = "/api/*"
