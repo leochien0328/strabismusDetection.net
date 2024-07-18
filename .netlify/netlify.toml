@@ -1,7 +1,7 @@
 redirects = []
 
 [build]
-publish = "build"
+publish = "dist"
 publishOrigin = "dist"
 command = "webpack --config webpack.config.cjs --mode=production --node-env=production"
 commandOrigin = "ui"
