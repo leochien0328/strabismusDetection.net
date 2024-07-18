@@ -4,7 +4,7 @@ const app = express();
 
 exports.handler = async function(event, context) {
     const raw_image_data = event.body;
-    const apiUrl = process.env.API_URL || 'http://localhost:10000';
+    const apiUrl = process.env.API_URL || 'https://strabismusdetection-net.onrender.com/api/upload-photo';
 
     try {
         const response = await fetch(apiUrl, {
