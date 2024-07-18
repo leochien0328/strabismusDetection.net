@@ -117,7 +117,7 @@ def upload_photo():
     })
 @app.route('/',methods=['POST'])
 def root_detect():
-    return detect()
+    return upload_photo()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True,port=10000)

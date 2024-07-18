@@ -48,7 +48,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './src/index.html',
+      template: './index.html',
     }),
     new MiniCssExtractPlugin(),
   ],
@@ -56,5 +56,11 @@ module.exports = {
     contentBase: path.join(__dirname, 'dist'),
     compress: true,
     port: 9000,
+    proxy:{
+      '/api':{
+        target:'http://localhost:10000',
+        changeOrigin:true,
+      },
+    },
   },
 };
