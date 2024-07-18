@@ -1,4 +1,5 @@
 import express from 'express';
+import fetch from 'node-fetch'; // 导入 fetch 模块
 const app = express();
 
 exports.handler = async function(event, context) {
@@ -27,7 +28,3 @@ exports.handler = async function(event, context) {
     }
 }
 
-const port = process.env.PORT || 10000;
-app.listen(port, () => {
-    console.log(`Proxy server running on port ${port}`);
-});
