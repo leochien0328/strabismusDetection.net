@@ -3,7 +3,7 @@ redirects = []
 [build]
 publish = "build"
 publishOrigin = "dist"
-command = "npm run build"
+command = "webpack --config webpack.config.cjs --mode=production --node-env=production"
 commandOrigin = "ui"
 functions = "netlify/functions"
 
