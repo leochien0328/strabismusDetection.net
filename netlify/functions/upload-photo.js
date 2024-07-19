@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 
 exports.handler = async (event) => {
+    const raw_image_data = JSON.parse(event.body).image;
     try {
         // 确保 event.body 存在并且是一个有效的 JSON 字符串
         if (!event.body) {

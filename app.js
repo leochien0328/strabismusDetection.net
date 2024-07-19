@@ -16,7 +16,7 @@ app.use(cors({
 }));
 
 app.use('/api', createProxyMiddleware({
-    target: 'https://strabismusdetection-net.onrender.com', // 确保这是你的 API URL
+    target: 'http://localhost:10000', // 确保这是你的 API URL
     changeOrigin: true,
     pathRewrite: {
         '^/api': '', // 重写路径，使其与目标路径匹配
