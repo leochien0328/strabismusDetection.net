@@ -4,12 +4,9 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 
 module.exports = {
-  mode:'production',
-  entry:{ 
-    main:'./src/index.js',
-  },
+  entry:'./main.js',
   output: {
-    filename: '[name].js',
+    filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
   },
   resolve: {
@@ -45,24 +42,16 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env'],
-          },
         },
-      },
-      {
-        test: /express\/lib\/view\.js$/,
-        use: 'null-loader'
       },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: './index.html',
+      filename:'index.html'
     }),
-    new MiniCssExtractPlugin({
-      filename: '[name].css',
-    }),
+    new MiniCssExtractPlugin(),
   ],
   devServer: {
     contentBase: path.join(__dirname, 'dist'),

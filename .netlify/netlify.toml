@@ -1,15 +1,18 @@
 redirects = []
 
 [build]
-publish = "dist"
+publish = "."
 publishOrigin = "dist"
-command = "webpack --config webpack.config.cjs --mode=production --node-env=production"
+command = "npm run build"
 commandOrigin = "ui"
 functions = "netlify/functions"
-
+[dev]
+  command = "npm start"
+  targetPort = 10000
+  port = 10000
 [[redirects]]
 from = "/api/*"
-to = "/.netlify/functions/upload-photo"
+to = "https://strabismusdetection-net.onrender.com/:splat"
 status = 200
 force = true
 
