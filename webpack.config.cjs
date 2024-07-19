@@ -4,10 +4,11 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 
 module.exports = {
-  entry:'./main.js',
+  entry:'./src/index.js',
   output: {
-    filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
+    filename: 'main.js',
+    
   },
   resolve: {
     fallback: {
@@ -49,7 +50,6 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './index.html',
-      filename:'index.html'
     }),
     new MiniCssExtractPlugin(),
   ],
