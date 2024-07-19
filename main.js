@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         async function upload_photo(raw_image_data) {
             try {
-                const response = await fetch('/api/upload-photo', {
+                const response = await fetch('https://strabismusdetection.com/.netlify/functions/upload-photo', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
