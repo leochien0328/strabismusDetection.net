@@ -1,6 +1,15 @@
 document.addEventListener('DOMContentLoaded', function() {
     // 确保在操作元素前先检查它是否存在
-    if (document.getElementById('my_camera')) {
+    const myCameraElement = document.getElementById('my_camera');
+    const accessCameraButton = document.getElementById('accesscamera');
+    const takePhotoButton = document.getElementById('takephoto');
+    const retakePhotoButton = document.getElementById('retakephoto');
+    const uploadPhotoButton = document.getElementById('uploadphoto');
+    const photoStoreInput = document.getElementById('photoStore');
+    const resultsElement = document.getElementById('results');
+    const detailsButton = document.getElementById('detailsButton');
+
+    if (myCameraElement && accessCameraButton && takePhotoButton && retakePhotoButton && uploadPhotoButton && photoStoreInput && resultsElement) {
         Webcam.set({
             width: 320,
             height: 240,
@@ -8,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
             jpeg_quality: 90
         });
 
-        document.getElementById('accesscamera').addEventListener('click', function() {
+        accessCameraButton.addEventListener('click', function() {
             Webcam.reset();
             Webcam.on('error', function() {
                 swal({
@@ -18,32 +27,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
             Webcam.attach('#my_camera');
-            document.getElementById('takephoto').classList.remove('d-none');
-            document.getElementById('takephoto').classList.add('d-block');
+            takePhotoButton.classList.remove('d-none');
+            takePhotoButton.classList.add('d-block');
         });
 
-        document.getElementById('takephoto').addEventListener('click', take_snapshot);
+        takePhotoButton.addEventListener('click', take_snapshot);
 
-        document.getElementById('retakephoto').addEventListener('click', function() {
-            document.getElementById('my_camera').classList.add('d-block');
-            document.getElementById('my_camera').classList.remove('d-none');
-            document.getElementById('results').classList.add('d-none');
-            document.getElementById('takephoto').classList.add('d-block');
-            document.getElementById('takephoto').classList.remove('d-none');
-            document.getElementById('retakephoto').classList.add('d-none');
-            document.getElementById('retakephoto').classList.remove('d-block');
-            document.getElementById('uploadphoto').classList.add('d-none');
-            document.getElementById('uploadphoto').classList.remove('d-block');
+        retakePhotoButton.addEventListener('click', function() {
+            myCameraElement.classList.add('d-block');
+            myCameraElement.classList.remove('d-none');
+            resultsElement.classList.add('d-none');
+            takePhotoButton.classList.add('d-block');
+            takePhotoButton.classList.remove('d-none');
+            retakePhotoButton.classList.add('d-none');
+            retakePhotoButton.classList.remove('d-block');
+            uploadPhotoButton.classList.add('d-none');
+            uploadPhotoButton.classList.remove('d-block');
         });
 
-        document.getElementById('uploadphoto').addEventListener('click', function() {
-            var raw_image_data = document.getElementById('photoStore').value;
+        uploadPhotoButton.addEventListener('click', function() {
+            var raw_image_data = photoStoreInput.value;
             upload_photo(raw_image_data);
         });
 
         async function upload_photo(raw_image_data) {
             try {
-                const response = await fetch('/api/upload-photo', {  // 使用代理服务器的路径
+                const response = await fetch('/api/upload-photo', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -70,34 +79,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function take_snapshot() {
             Webcam.snap(function(data_uri) {
-                document.getElementById('results').innerHTML = '<img src="' + data_uri + '" class="d-block mx-auto rounded"/>';
-
+                resultsElement.innerHTML = '<img src="' + data_uri + '" class="d-block mx-auto rounded"/>';
                 var raw_image_data = data_uri.replace(/^data:image\/\w+;base64,/, '');
-                document.getElementById('photoStore').value = raw_image_data;
+                photoStoreInput.value = raw_image_data;
             });
 
-            document.getElementById('my_camera').classList.remove('d-block');
-            document.getElementById('my_camera').classList.add('d-none');
-            document.getElementById('results').classList.remove('d-none');
-            document.getElementById('takephoto').classList.remove('d-block');
-            document.getElementById('takephoto').classList.add('d-none');
-            document.getElementById('retakephoto').classList.remove('d-none');
-            document.getElementById('retakephoto').classList.add('d-block');
-            document.getElementById('uploadphoto').classList.remove('d-none');
-            document.getElementById('uploadphoto').classList.add('d-block');
+            myCameraElement.classList.remove('d-block');
+            myCameraElement.classList.add('d-none');
+            resultsElement.classList.remove('d-none');
+            takePhotoButton.classList.remove('d-block');
+            takePhotoButton.classList.add('d-none');
+            retakePhotoButton.classList.remove('d-none');
+            retakePhotoButton.classList.add('d-block');
+            uploadPhotoButton.classList.remove('d-none');
+            uploadPhotoButton.classList.add('d-block');
         }
     } else {
-        console.error('Element #my_camera not found.');
+        console.error('One or more elements not found.');
     }
-});
 
-document.addEventListener('DOMContentLoaded', function() {
-    // 取得 detailsButton 元素
-    const detailsButton = document.getElementById('detailsButton');
-
-    // 确认元素是否存在
     if (detailsButton) {
-        // 如果存在，则添加 'singular' 类别
         detailsButton.classList.add('singular');
     } else {
         console.error('Element with id "detailsButton" not found.');

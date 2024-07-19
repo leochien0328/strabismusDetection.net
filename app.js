@@ -24,11 +24,12 @@ app.use('/api', createProxyMiddleware({
 }));
 
 app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
-
-app.post('/api/upload-photo', (req, res) => {
+    console.log('Received request headers:', req.headers);
+    console.log('Received request body:', req.body);
     const { image } = req.body;
+    if (!image) {
+        return res.status(400).json({ error: 'No image provided' });
+    }
     console.log('Received image data:', image);
     // 在這裡進行相應的處理，例如圖片處理、斜視檢測等等
 

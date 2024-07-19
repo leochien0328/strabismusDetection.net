@@ -77,71 +77,23 @@ def eye_coordinates(mesh_points):
         right_y_intersection = None
 
     return [left_x_intersection, left_y_intersection, right_x_intersection, right_y_intersection]
-
-
-@app.route('/detect', methods=['POST'])
-def detect():
-    file = request.files['file']
-    if not file:
-        return jsonify({"error": "No file uploaded"}), 400
-
-    image = cv2.imdecode(np.fromstring(file.read(), np.uint8), cv2.IMREAD_UNCHANGED)
-    iris_coords, mesh_points = detect_iris(image)
-    if not iris_coords:
-        return jsonify({"error": "No face detected"}), 400
-
-    eye_coords = eye_coordinates(mesh_points)
-    left_distance = math.sqrt((iris_coords[0] - eye_coords[0]) ** 2 + (iris_coords[1] - eye_coords[1]) ** 2)
-    right_distance = math.sqrt((iris_coords[2] - eye_coords[2]) ** 2 + (iris_coords[3] - eye_coords[3]) ** 2)
-    solution = abs(left_distance - right_distance)
-
-    return jsonify({
-        "solution": solution
-    })
 @app.route('/api/upload-photo', methods=['POST'])
 def upload_photo():
-    if request.is_json:
+    if request.method == 'POST':
         try:
-            image_data = request.json.get('image')
-            image = Image.open(BytesIO(base64.b64decode(image_data)))
-            image = np.array(image)
-            solution, dist_L, dist_R = detect_iris(image)
-            result = 1 if solution > 3 else 0
-            return jsonify({"result": result, "solution": solution, "dist_L": dist_L, "dist_R": dist_R}), 200
+            if request.is_json:
+                image_data = request.json.get('image')
+                image = Image.open(BytesIO(base64.b64decode(image_data)))
+                image = np.array(image)
+                solution, dist_L, dist_R = detect_iris(image)
+                result = 1 if solution > 3 else 0
+                return jsonify({"result": result, "solution": solution, "dist_L": dist_L, "dist_R": dist_R}), 200
+            else:
+                return jsonify({"error": "Unsupported Media Type: Did not attempt to load JSON data because the request Content-Type was not 'application/json'."}), 415
         except Exception as e:
             return jsonify({"error": str(e)}), 500
-    else:
-        return jsonify({"error": "Unsupported Media Type: Did not attempt to load JSON data because the request Content-Type was not 'application/json'."}), 415
 @app.route('/', methods=['GET'])
 def get_hello():
     return 'Hello World!'
-
-@app.route('/',methods=['POST'])
-def post_root():
-    # 根据请求的 Content-Type 决定如何处理
-    if request.content_type == 'application/json':
-        # 处理 JSON 格式的请求体
-        data = request.json
-        # 在这里进行相应的处理，例如调用处理图片上传的函数
-        return upload_photo(data)
-    else:
-        # 处理其他格式的请求体，例如表单提交
-        image_file = request.files['file']
-        return upload_photo(image_file)
-
-def upload_photo(data):
-    # 在这里处理上传照片逻辑，根据请求的数据进行不同的处理
-    # 示例：假设 data 是 JSON 数据
-    if 'image' in data:
-        image_data = data['image']
-        # 进行相应的处理，例如图像处理、斜视检测等等
-        # 返回处理结果
-        return jsonify({
-            "message": "Image uploaded and processed successfully",
-            "result": "your_result_here"
-        })
-    else:
-        return jsonify({"error": "No image uploaded"}), 400
-
 if __name__ == "__main__":
     app.run(debug=True,port=10000)
