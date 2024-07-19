@@ -100,7 +100,7 @@ def detect():
     })
 @app.route('/api/upload-photo', methods=['POST'])
 def upload_photo():
-    if request.method == 'POST':
+    if request.is_json:
         try:
             image_data = request.json.get('image')
             image = Image.open(BytesIO(base64.b64decode(image_data)))
@@ -110,6 +110,8 @@ def upload_photo():
             return jsonify({"result": result, "solution": solution, "dist_L": dist_L, "dist_R": dist_R}), 200
         except Exception as e:
             return jsonify({"error": str(e)}), 500
+    else:
+        return jsonify({"error": "Unsupported Media Type: Did not attempt to load JSON data because the request Content-Type was not 'application/json'."}), 415
 @app.route('/', methods=['GET'])
 def get_hello():
     return 'Hello World!'

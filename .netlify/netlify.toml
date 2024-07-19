@@ -1,9 +1,7 @@
 redirects = []
 
 [build]
-base="."
 publish = "."
-publishOrigin = "dist"
 command = "npm run build"
 commandOrigin = "ui"
 functions = "netlify/functions"
@@ -13,7 +11,7 @@ functions = "netlify/functions"
   port = 8888
 [[redirects]]
 from = "/api/*"
-to = "http://localhost:10000/:splat"
+to = "https://strabismusdetection-net.onrender.com/api/:splat"
 status = 200
 force = true
 
