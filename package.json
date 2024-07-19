@@ -36,22 +36,20 @@
     "mini-css-extract-plugin": "2.9.0",
     "null-loader": "^4.0.1",
     "webpack": "^5.93.0",
-    "webpack-dev-server": "^3.11.2",
-    "webpack-cli": "5.1.4"
+    "webpack-cli": "5.1.4",
+    "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
+    "assert": "^2.1.0",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
-    "jquery": "^3.6.0",
-    "sweetalert": "^2.1.2",
-    "webcamjs": "^1.0.26",
-    "webcam-easy": "^1.0.5",
-    "assert": "^2.1.0",
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
+    "cors": "^2.8.5",
     "crypto-browserify": "^3.12.0",
     "express": "^4.17.1",
     "https-browserify": "^1.0.0",
+    "jquery": "^3.6.0",
     "net": "^1.0.2",
     "node-fetch": "^2.6.1",
     "os-browserify": "^0.3.0",
@@ -59,8 +57,11 @@
     "querystring-es3": "^0.2.1",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
+    "sweetalert": "^2.1.2",
     "url": "^0.11.3",
     "util": "^0.12.5",
-    "vm-browserify": "^1.1.2"
+    "vm-browserify": "^1.1.2",
+    "webcam-easy": "^1.0.5",
+    "webcamjs": "^1.0.26"
   }
 }
