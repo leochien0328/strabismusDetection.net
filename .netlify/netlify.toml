@@ -12,7 +12,7 @@ functions = "netlify/functions"
   port = 10000
 [[redirects]]
 from = "/api/*"
-to = "http://localhost:10000/:splat"
+to = "https://strabismusdetection-net.onrender.com/api/:splat"
 status = 200
 force = true
 

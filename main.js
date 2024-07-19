@@ -1,6 +1,6 @@
-$(document).ready(function() {
-    // 確保在操作元素前先檢查它是否存在
-    if ($('#my_camera').length > 0) {
+document.addEventListener('DOMContentLoaded', function() {
+    // 确保在操作元素前先检查它是否存在
+    if (document.getElementById('my_camera')) {
         Webcam.set({
             width: 320,
             height: 240,
@@ -8,7 +8,7 @@ $(document).ready(function() {
             jpeg_quality: 90
         });
 
-        $('#accesscamera').on('click', function() {
+        document.getElementById('accesscamera').addEventListener('click', function() {
             Webcam.reset();
             Webcam.on('error', function() {
                 swal({
@@ -18,21 +18,26 @@ $(document).ready(function() {
                 });
             });
             Webcam.attach('#my_camera');
-            $('#takephoto').removeClass('d-none').addClass('d-block');
+            document.getElementById('takephoto').classList.remove('d-none');
+            document.getElementById('takephoto').classList.add('d-block');
         });
 
-        $('#takephoto').on('click', take_snapshot);
+        document.getElementById('takephoto').addEventListener('click', take_snapshot);
 
-        $('#retakephoto').on('click', function() {
-            $('#my_camera').addClass('d-block').removeClass('d-none');
-            $('#results').addClass('d-none');
-            $('#takephoto').addClass('d-block').removeClass('d-none');
-            $('#retakephoto').addClass('d-none').removeClass('d-block');
-            $('#uploadphoto').addClass('d-none').removeClass('d-block');
+        document.getElementById('retakephoto').addEventListener('click', function() {
+            document.getElementById('my_camera').classList.add('d-block');
+            document.getElementById('my_camera').classList.remove('d-none');
+            document.getElementById('results').classList.add('d-none');
+            document.getElementById('takephoto').classList.add('d-block');
+            document.getElementById('takephoto').classList.remove('d-none');
+            document.getElementById('retakephoto').classList.add('d-none');
+            document.getElementById('retakephoto').classList.remove('d-block');
+            document.getElementById('uploadphoto').classList.add('d-none');
+            document.getElementById('uploadphoto').classList.remove('d-block');
         });
 
-        $('#uploadphoto').on('click', function() {
-            var raw_image_data = $('#photoStore').val();
+        document.getElementById('uploadphoto').addEventListener('click', function() {
+            var raw_image_data = document.getElementById('photoStore').value;
             upload_photo(raw_image_data);
         });
 
@@ -65,35 +70,36 @@ $(document).ready(function() {
 
         function take_snapshot() {
             Webcam.snap(function(data_uri) {
-                $('#results').html('<img src="' + data_uri + '" class="d-block mx-auto rounded"/>');
+                document.getElementById('results').innerHTML = '<img src="' + data_uri + '" class="d-block mx-auto rounded"/>';
 
                 var raw_image_data = data_uri.replace(/^data:image\/\w+;base64,/, '');
-                $('#photoStore').val(raw_image_data);
+                document.getElementById('photoStore').value = raw_image_data;
             });
 
-            $('#my_camera').removeClass('d-block').addClass('d-none');
-            $('#results').removeClass('d-none');
-            $('#takephoto').removeClass('d-block').addClass('d-none');
-            $('#retakephoto').removeClass('d-none').addClass('d-block');
-            $('#uploadphoto').removeClass('d-none').addClass('d-block');
+            document.getElementById('my_camera').classList.remove('d-block');
+            document.getElementById('my_camera').classList.add('d-none');
+            document.getElementById('results').classList.remove('d-none');
+            document.getElementById('takephoto').classList.remove('d-block');
+            document.getElementById('takephoto').classList.add('d-none');
+            document.getElementById('retakephoto').classList.remove('d-none');
+            document.getElementById('retakephoto').classList.add('d-block');
+            document.getElementById('uploadphoto').classList.remove('d-none');
+            document.getElementById('uploadphoto').classList.add('d-block');
         }
     } else {
         console.error('Element #my_camera not found.');
     }
 });
 
-// 確保在 DOM 加載完畢後再執行相關操作
 document.addEventListener('DOMContentLoaded', function() {
     // 取得 detailsButton 元素
     const detailsButton = document.getElementById('detailsButton');
 
-    // 確認元素是否存在
+    // 确认元素是否存在
     if (detailsButton) {
-        // 如果存在，則添加 'singular' 類別
+        // 如果存在，则添加 'singular' 类别
         detailsButton.classList.add('singular');
     } else {
         console.error('Element with id "detailsButton" not found.');
     }
 });
-
-

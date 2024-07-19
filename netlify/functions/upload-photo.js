@@ -5,7 +5,6 @@ export const handler = async (event) => {
     console.log('Event Body:', event.body);
     const raw_image_data = JSON.parse(event.body).image;
     const apiUrl = process.env.API_URL || 'https://strabismusdetection-net.onrender.com/api/upload-photo';
-
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
