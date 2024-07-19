@@ -5,12 +5,7 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config webpack.config.cjs --mode=production",
-    "build:dev": "webpack --mode=development",
-    "build:prod": "webpack --mode=production --node-env=production",
-    "watch": "webpack --watch",
-    "serve": "webpack serve",
     "start": "node app.js"
   },
   "repository": {
