@@ -1,6 +1,7 @@
 redirects = []
 
 [build]
+base="."
 publish = "."
 publishOrigin = "dist"
 command = "npm run build"
