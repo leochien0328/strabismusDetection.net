@@ -3,7 +3,6 @@ redirects = []
 [build]
 publish = "."
 command = "npm run build"
-commandOrigin = "ui"
 functions = "netlify/functions"
 [dev]
   command = "npm start"
@@ -14,6 +13,7 @@ from = "/api/*"
 to = "https://strabismusdetection-net.onrender.com/api/:splat"
 status = 200
 force = true
+ headers = { X-From = "Netlify" }
 [build.environment]
 
 [build.processing]
