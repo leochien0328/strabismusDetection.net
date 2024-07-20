@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 
 exports.handler = async (event) => {
     try {
-        console.log("Received event body:", event.body);  // 添加日志
+        console.log("Received event:", JSON.stringify(event));  // 打印整个事件对象
 
         if (!event.body) {
             throw new Error("Invalid request body");
@@ -26,17 +26,16 @@ exports.handler = async (event) => {
         });
 
         const data = await response.json();
-        console.log("Received response from API:", data);  // 添加日志
+        console.log("Received response from API:", JSON.stringify(data));  // 添加日志
         return {
             statusCode: 200,
             body: JSON.stringify(data)
         };
     } catch (error) {
-        console.error("Error:", error);  // 添加日志
+        console.error("Error:", error.message);  // 添加日志
         return {
             statusCode: 500,
             body: JSON.stringify({ error: error.message || 'Failed to upload photo' })
         };
     }
 };
-
