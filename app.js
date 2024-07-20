@@ -14,9 +14,9 @@ app.use(express.urlencoded({ extended: true })); // 解析 URL 编码的请求�
 app.use(cors({
     origin: 'https://strabismusdetection.com'
 }));
-
+const apiUrl = process.env.API_URL || 'https://strabismusdetection-net.onrender.com/api/upload-photo'; // 使用 Netlify 設置的環境變量
 app.use('/api', createProxyMiddleware({
-    target: 'http://127.0.0.1:10000', // 确保这是你的 API URL
+    target: apiUrl, // 确保这是你的 API URL
     changeOrigin: true,
     pathRewrite: {
         '^/api': '', // 重写路径，使其与目标路径匹配
@@ -38,7 +38,9 @@ app.post('/api/upload-photo', (req, res) => {
         result: 'your_result_here'
     });
 });
-
+app.get('/',(req, res)=>{
+    res.send('Hello World!');
+})
 const port = process.env.PORT || 10000;
 app.listen(port, () => {
     console.log(`Proxy server running on port ${port}`);

@@ -79,19 +79,22 @@ def eye_coordinates(mesh_points):
     return [left_x_intersection, left_y_intersection, right_x_intersection, right_y_intersection]
 @app.route('/api/upload-photo', methods=['POST'])
 def upload_photo():
-    if request.method == 'POST':
-        try:
-            if request.is_json:
-                image_data = request.json.get('image')
-                image = Image.open(BytesIO(base64.b64decode(image_data)))
-                image = np.array(image)
-                solution, dist_L, dist_R = detect_iris(image)
-                result = 1 if solution > 3 else 0
-                return jsonify({"result": result, "solution": solution, "dist_L": dist_L, "dist_R": dist_R}), 200
-            else:
-                return jsonify({"error": "Unsupported Media Type: Did not attempt to load JSON data because the request Content-Type was not 'application/json'."}), 415
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
+    if not request.is_json:
+            return jsonify({"error": "Unsupported Media Type"}), 415
+
+    try:
+        image_data = request.json.get('image')
+        if not image_data:
+            return jsonify({"error": "No image data provided"}), 400
+            
+        image = Image.open(BytesIO(base64.b64decode(image_data)))
+        image = np.array(image)
+        solution, dist_L, dist_R = detect_iris(image)
+        result = 1 if solution > 3 else 0
+        return jsonify({"result": result, "solution": solution, "dist_L": dist_L, "dist_R": dist_R}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/', methods=['GET'])
 def get_hello():
     return 'Hello World!'

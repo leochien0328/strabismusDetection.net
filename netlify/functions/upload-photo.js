@@ -21,7 +21,7 @@ exports.handler = async (event) => {
             'Content-Type': 'application/json',
             'Authorization': '70bdf7dde1abcefebd3f83b09656e340'
           },
-          body: JSON.stringify({image: image })
+          body: JSON.stringify({image})
         });
     
         const data = await response.json();
