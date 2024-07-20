@@ -2,7 +2,7 @@ redirects = []
 
 [build]
 publish = "."
-command = "npm run build"
+command = "npm run start"
 functions = "netlify/functions"
 [dev]
   command = "npm start"
@@ -29,5 +29,5 @@ force = true
 [build.services]
 
 [functions]
-  directory = "functions"
+  directory = "netlify/function"
 [functions."*"]
