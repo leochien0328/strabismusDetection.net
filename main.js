@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         uploadPhotoButton.addEventListener('click', function() {
-            var raw_image_data = photoStoreInput.value;
+            var raw_image_data = document.getElementById('photoStore').value;
             upload_photo(raw_image_data);
         });
 
