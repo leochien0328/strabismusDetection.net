@@ -22,8 +22,7 @@ app.use('/api', createProxyMiddleware({
         '^/api': '', // 重写路径，使其与目标路径匹配
     },
 }));
-
-app.get('/', (req, res) => {
+app.post('/api/upload-photo', (req, res) => {
     console.log('Received request headers:', req.headers);
     console.log('Received request body:', req.body);
     const { image } = req.body;
