@@ -60,6 +60,11 @@ def eye_coordinates(mesh_points):
     except ZeroDivisionError:
         left_x_intersection = None
         left_y_intersection = None
+    except Exception as e:
+        print(f"Error calculating left eye coordinates: {e}")
+        left_x_intersection = None
+        left_y_intersection = None
+
 
     try:
         right_k1 = (right_eye_pts[1][1] - right_eye_pts[0][1]) / (right_eye_pts[1][0] - right_eye_pts[0][0])
@@ -73,6 +78,10 @@ def eye_coordinates(mesh_points):
             right_x_intersection = None
             right_y_intersection = None
     except ZeroDivisionError:
+        right_x_intersection = None
+        right_y_intersection = None
+    except Exception as e:
+        print(f"Error calculating right eye coordinates: {e}")
         right_x_intersection = None
         right_y_intersection = None
 

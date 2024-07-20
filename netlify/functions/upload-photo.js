@@ -17,7 +17,7 @@ exports.handler = async (event) => {
         const response = await fetch(apiUrl, {
           method: 'POST',
           headers: {
-            'Content-Type': application/json,
+            'Content-Type': 'application/json',
             'Authorization': '70bdf7dde1abcefebd3f83b09656e340'
           },
           body: JSON.stringify({image})
