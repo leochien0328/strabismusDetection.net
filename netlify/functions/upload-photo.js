@@ -1,14 +1,13 @@
 import fetch from 'node-fetch';
 
 exports.handler = async (event) => {
-    const raw_image_data = JSON.parse(event.body).image;
     try {
         // 确保 event.body 存在并且是一个有效的 JSON 字符串
         if (!event.body) {
           throw new Error("Invalid request body");
         }
-    
-        const { image } = JSON.parse(event.body);
+        const parsedBody = JSON.parse(event.body);
+        const { image } = parsedBody;
     
         if (!image) {
           throw new Error("No image data provided");
@@ -22,7 +21,7 @@ exports.handler = async (event) => {
             'Content-Type': 'application/json',
             'Authorization': '70bdf7dde1abcefebd3f83b09656e340'
           },
-          body: JSON.stringify({ image: raw_image_data  })
+          body: JSON.stringify({image: image })
         });
     
         const data = await response.json();
