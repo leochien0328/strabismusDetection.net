@@ -30,5 +30,5 @@ headers = { X-From = "Netlify" }
 [build.services]
 
 [functions]
-node_bundler="esbuild"
+  directory = "functions"
 [functions."*"]

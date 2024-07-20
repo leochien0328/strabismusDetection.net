@@ -79,9 +79,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function take_snapshot() {
             Webcam.snap(function(data_uri) {
-                resultsElement.innerHTML = '<img src="' + data_uri + '" class="d-block mx-auto rounded"/>';
+                document.getElementById('results').innerHTML = '<img src="' + data_uri + '" class="d-block mx-auto rounded"/>';
                 var raw_image_data = data_uri.replace(/^data:image\/\w+;base64,/, '');
-                photoStoreInput.value = raw_image_data;
+                while (raw_image_data.length % 4 !== 0) {
+                    raw_image_data += '=';
+                }
+                document.getElementById('photoStore').value = raw_image_data;
             });
 
             myCameraElement.classList.remove('d-block');

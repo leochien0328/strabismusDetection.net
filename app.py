@@ -89,9 +89,20 @@ def upload_photo():
             
         image = Image.open(BytesIO(base64.b64decode(image_data)))
         image = np.array(image)
-        solution, dist_L, dist_R = detect_iris(image)
+        iris_coords, mesh_points = detect_iris(image)
+
+        if iris_coords is None or mesh_points is None:
+            return jsonify({"error": "No face detected"}), 400
+
+        eye_coords = eye_coordinates(mesh_points)
+        if any(coord is None for coord in eye_coords):
+            return jsonify({"error": "Could not calculate eye coordinates"}), 400
+
+        left_distance = math.sqrt((iris_coords[0] - eye_coords[0]) ** 2 + (iris_coords[1] - eye_coords[1]) ** 2)
+        right_distance = math.sqrt((iris_coords[2] - eye_coords[2]) ** 2 + (iris_coords[3] - eye_coords[3]) ** 2)
+        solution = abs(left_distance - right_distance)
         result = 1 if solution > 3 else 0
-        return jsonify({"result": result, "solution": solution, "dist_L": dist_L, "dist_R": dist_R}), 200
+        return jsonify({"result": result, "solution": solution}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
