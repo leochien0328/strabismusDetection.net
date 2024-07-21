@@ -6756,16 +6756,20 @@ var require_lib3 = __commonJS({
 
 // netlify/functions/upload-photo.js
 var import_node_fetch = __toESM(require_lib3(), 1);
-exports.handler = async function(event, context) {
-  const raw_image_data = event.body;
-  const apiUrl = process.env.API_URL || "https://strabismusdetection-net.onrender.com/";
+exports.handler = async (event) => {
   try {
+    const { image } = JSON.parse(event.body);
+    if (!image) {
+      throw new Error("No image data provided");
+    }
+    const apiUrl = process.env.API_URL || "https://strabismusdetection-net.onrender.com/api/upload-photo";
     const response = await (0, import_node_fetch.default)(apiUrl, {
       method: "POST",
       headers: {
-        "Content-Type": "application/octect-stream"
+        "Content-Type": "application/json",
+        "Authorization": "70bdf7dde1abcefebd3f83b09656e340"
       },
-      body: raw_image_data
+      body: JSON.stringify({ image })
     });
     const data = await response.json();
     return {
@@ -6775,7 +6779,7 @@ exports.handler = async function(event, context) {
   } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Failed to process the image" })
+      body: JSON.stringify({ error: error.message || "Failed to upload photo" })
     };
   }
 };
