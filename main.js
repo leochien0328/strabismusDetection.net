@@ -63,7 +63,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const data = await response.json();
                 if (data.result = 1) {
                     $('#possibleStrabismusModal').modal('show');
-                } else {
+                }
+                if(data.result=0){
                     $('#noStrabismusModal').modal('show');
                 }
                 console.log('Solution:', data.solution);
