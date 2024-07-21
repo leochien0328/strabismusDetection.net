@@ -35,4 +35,6 @@ force = true
 [functions]
   directory = "netlify/function"
   node_bundler="esbuild"
+[functions.upload-photo]
+  timeout = 20  # 将超时时间设置为 20 秒
 [functions."*"]
