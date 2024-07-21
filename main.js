@@ -61,10 +61,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     body: JSON.stringify({ image: raw_image_data })
                 });
                 const data = await response.json();
-                if (data.result = 1) {
+                if (data.result == 1) {
                     $('#possibleStrabismusModal').modal('show');
                 }
-                if(data.result=0){
+                if(data.result==0){
                     $('#noStrabismusModal').modal('show');
                 }
                 console.log('Solution:', data.solution);
