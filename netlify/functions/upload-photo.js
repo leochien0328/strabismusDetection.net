@@ -1,11 +1,22 @@
-import fetch from 'node-fetch';
+const fetch = require('node-fetch');
 
 exports.handler = async (event) => {
+    if (event.httpMethod !== 'POST') {
+        return {
+            statusCode: 405,
+            body: JSON.stringify({ error: "Method not allowed" }),
+        };
+    }
+
     try {
-        const { image } = JSON.parse(event.body);
+        const body = JSON.parse(event.body);
+        const image = body.image;
 
         if (!image) {
-            throw new Error("No image data provided");
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ error: "No image data provided" }),
+            };
         }
 
         const apiUrl = process.env.API_URL || 'https://strabismusdetection-net.onrender.com/api/upload-photo';
@@ -14,20 +25,22 @@ exports.handler = async (event) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': '70bdf7dde1abcefebd3f83b09656e340'
+                'Authorization': '70bdf7dde1abcefebd3f83b09656e340'  // 添加 API Key
             },
-            body: JSON.stringify({ image })
+            body: JSON.stringify({ image: image })
         });
 
-        const data = await response.json();
+        const result = await response.json();
+
         return {
             statusCode: 200,
-            body: JSON.stringify(data)
+            body: JSON.stringify(result),
         };
     } catch (error) {
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: error.message || 'Failed to upload photo' })
+            body: JSON.stringify({ error: error.message }),
         };
     }
 };
+
