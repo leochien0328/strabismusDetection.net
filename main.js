@@ -97,6 +97,21 @@ document.addEventListener('DOMContentLoaded', function() {
             uploadPhotoButton.classList.remove('d-none');
             uploadPhotoButton.classList.add('d-block');
         }
+        document.getElementById('photoForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const photoStore = document.getElementById('photoStore').value;
+
+            const response = await fetch('/.netlify/functions/upload-photo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ image: photoStore })
+            });
+
+            const result = await response.json();
+            console.log(result);
+        });
     } else {
         console.error('One or more elements not found.');
     }

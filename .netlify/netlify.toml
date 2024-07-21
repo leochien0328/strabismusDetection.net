@@ -1,9 +1,13 @@
 redirects = []
 
 [build]
-publish = "public"
+publish = "."
 command = "npm run build"
 functions = "netlify/functions"
+
+[context.production.environment]
+  API_URL = "https://strabismusdetection-net.onrender.com/api/upload-photo"
+
 [dev]
   command = "npm start"
   targetPort = 10000
