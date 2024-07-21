@@ -1,8 +1,8 @@
 redirects = []
 
 [build]
-publish = "."
-command = ""
+publish = "public"
+command = "npm run build"
 functions = "netlify/functions"
 [dev]
   command = "npm start"
@@ -10,7 +10,7 @@ functions = "netlify/functions"
   port = 8888
 [[redirects]]
 from = "/api/*"
-to = "https://strabismusdetection-net.onrender.com/api/:splat"
+to = "/.netlify/functions/:splat"
 status = 200
 force = true
  headers = { X-From = "Netlify" }
@@ -30,4 +30,5 @@ force = true
 
 [functions]
   directory = "netlify/function"
+  node_bundler="esbuild"
 [functions."*"]
