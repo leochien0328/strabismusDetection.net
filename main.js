@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     body: JSON.stringify({ image: raw_image_data })
                 });
                 const data = await response.json();
-                if (data.result > 3) {
+                if (data.result = 1) {
                     $('#possibleStrabismusModal').modal('show');
                 } else {
                     $('#noStrabismusModal').modal('show');
