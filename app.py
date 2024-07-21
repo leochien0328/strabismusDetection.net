@@ -46,44 +46,33 @@ def detect_iris(image):
 def eye_coordinates(mesh_points):
     left_eye_pts = np.array([mesh_points[i] for i in LEFT_EYE])
     right_eye_pts = np.array([mesh_points[i] for i in RIGHT_EYE])
+    left_x_intersection = left_y_intersection = None
+    right_x_intersection = right_y_intersection = None
     try:
-        left_k1 = (left_eye_pts[1][1] - left_eye_pts[0][1]) / (left_eye_pts[1][0] - left_eye_pts[0][0])
-        left_b1 = left_eye_pts[1][1] - left_k1 * left_eye_pts[1][0]
-        left_k2 = (left_eye_pts[5][1] - left_eye_pts[4][1]) / (left_eye_pts[5][0] - left_eye_pts[4][0])
+        left_k1 = (left_eye_pts[0][1] - left_eye_pts[8][1]) / (left_eye_pts[0][0] - left_eye_pts[8][0])
+        left_b1 = left_eye_pts[0][1] - left_k1 * left_eye_pts[0][0]
+        left_k2 = (left_eye_pts[5][1] - left_eye_pts[12][1]) / (left_eye_pts[5][0] - left_eye_pts[12][0])
         left_b2 = left_eye_pts[5][1] - left_k2 * left_eye_pts[5][0]
         if left_k1 != left_k2:
             left_x_intersection = (left_b2 - left_b1) / (left_k1 - left_k2)
             left_y_intersection = left_k1 * left_x_intersection + left_b1
-        else:
-            left_x_intersection = None
-            left_y_intersection = None
     except ZeroDivisionError:
-        left_x_intersection = None
-        left_y_intersection = None
+        print("ZeroDivisionError occurred in left eye calculation")
     except Exception as e:
         print(f"Error calculating left eye coordinates: {e}")
-        left_x_intersection = None
-        left_y_intersection = None
-
 
     try:
-        right_k1 = (right_eye_pts[1][1] - right_eye_pts[0][1]) / (right_eye_pts[1][0] - right_eye_pts[0][0])
-        right_b1 = right_eye_pts[1][1] - right_k1 * right_eye_pts[1][0]
-        right_k2 = (right_eye_pts[5][1] - right_eye_pts[4][1]) / (right_eye_pts[5][0] - right_eye_pts[4][0])
+        right_k1 = (right_eye_pts[0][1] - right_eye_pts[8][1]) / (right_eye_pts[0][0] - right_eye_pts[8][0])
+        right_b1 = right_eye_pts[0][1] - right_k1 * right_eye_pts[0][0]
+        right_k2 = (right_eye_pts[5][1] - right_eye_pts[12][1]) / (right_eye_pts[5][0] - right_eye_pts[12][0])
         right_b2 = right_eye_pts[5][1] - right_k2 * right_eye_pts[5][0]
         if right_k1 != right_k2:
             right_x_intersection = (right_b2 - right_b1) / (right_k1 - right_k2)
             right_y_intersection = right_k1 * right_x_intersection + right_b1
-        else:
-            right_x_intersection = None
-            right_y_intersection = None
     except ZeroDivisionError:
-        right_x_intersection = None
-        right_y_intersection = None
+        print("ZeroDivisionError occurred in right eye calculation")
     except Exception as e:
         print(f"Error calculating right eye coordinates: {e}")
-        right_x_intersection = None
-        right_y_intersection = None
 
     return [left_x_intersection, left_y_intersection, right_x_intersection, right_y_intersection]
 @app.route('/api/upload-photo', methods=['POST'])
