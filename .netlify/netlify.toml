@@ -2,7 +2,7 @@ redirects = []
 
 [build]
 publish = "."
-command = "npm run start"
+command = ""
 functions = "netlify/functions"
 [dev]
   command = "npm start"

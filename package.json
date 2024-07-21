@@ -5,8 +5,7 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "node app.js",
-    "build": "echo 'No build step needed'"
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
