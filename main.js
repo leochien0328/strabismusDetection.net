@@ -62,7 +62,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 const data = await response.json();
                 if (data.result == 1) {
-                    $('#possibleStrabismusModal').modal('show');
+                    $('#exotropiaStrabismusModal').modal('show');
+                }
+                if(data.result==2){
+                    $('#esotropiaStrabismusModal').modal('show');
+                }
+                if(data.result==3){
+                    $('#hypotropiaStrabismusModal').modal('show');
+                }
+                if(data.result==4){
+                    $('#hypotropiaStrabismusModal').modal('show');
                 }
                 if(data.result==0){
                     $('#noStrabismusModal').modal('show');
