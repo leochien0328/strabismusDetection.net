@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     $('#hypotropiaStrabismusModal').modal('show');
                 }
                 if(data.result==4){
-                    $('#hypotropiaStrabismusModal').modal('show');
+                    $('#hypertropiaStrabismusModal').modal('show');
                 }
                 if(data.result==0){
                     $('#noStrabismusModal').modal('show');
