@@ -75,7 +75,7 @@ def distance_vector(mesh_points):
         right_angle_degrees = 360 + np.degrees(right_angle)
     # Handle other cases    
     else:  
-        right_angle_degrees = -np.degrees(right_angle)
+        right_angle_degrees = - np.degrees(right_angle)
 
     #right up    
     right_angle_up = np.arctan2(right_iris_up_vector[1], right_iris_up_vector[0])
@@ -85,7 +85,7 @@ def distance_vector(mesh_points):
         right_angle_degrees_up = 360 + np.degrees(right_angle_up)
     # Handle other cases    
     else:  
-        right_angle_degrees_up = -np.degrees(right_angle_up)
+        right_angle_degrees_up = - np.degrees(right_angle_up)
 
     #right down
     right_angle_down = np.arctan2(right_iris_down_vector[1], right_iris_down_vector[0])
@@ -95,7 +95,7 @@ def distance_vector(mesh_points):
         right_angle_degrees_down = 360 + np.degrees(right_angle_down)
     # Handle other cases    
     else:  
-        right_angle_degrees_down = -np.degrees(right_angle_down)    
+        right_angle_degrees_down = - np.degrees(right_angle_down)    
 
     left_vecs = calculate_vectors(lc[:2], left_eye_pts)
     right_vecs = calculate_vectors(rc[:2], right_eye_pts)
@@ -134,9 +134,11 @@ def detect_face_landmarks(image):
                 cv2.circle(image, (x, y), 1, (0, 0, 255), -1)
             
             left_distances, right_distances, left_angle_degrees, right_angle_degrees, left_angle_degrees_up, left_angle_degrees_down, right_angle_degrees_up, right_angle_degrees_down = distance_vector(mesh_points)
-            return diagnose(left_distances, right_distances, left_angle_degrees, right_angle_degrees, left_angle_degrees_up, left_angle_degrees_down, right_angle_degrees_up, right_angle_degrees_down)
+            return left_distances, right_distances, left_angle_degrees, right_angle_degrees, left_angle_degrees_up, left_angle_degrees_down, right_angle_degrees_up, right_angle_degrees_down
          
         return None
+
+
 @app.route('/api/upload-photo', methods=['POST'])
 def upload_photo():
     if not request.is_json:
@@ -149,43 +151,45 @@ def upload_photo():
 
         image = Image.open(BytesIO(base64.b64decode(image_data)))
         image = np.array(image)
-        result = detect_face_landmarks(image)
-        if result is None:
+        landmarks_result = detect_face_landmarks(image)
+
+        if landmarks_result is None:
             return jsonify({"error": "No face landmarks detected"}), 400
+
+        left_distances, right_distances, left_angle_degrees, right_angle_degrees, left_angle_degrees_up, left_angle_degrees_down, right_angle_degrees_up, right_angle_degrees_down = landmarks_result
+
+        result = 0  # Initialize result to 0
+    
+        if ((left_angle_degrees_down > right_angle_degrees and left_angle_degrees_up < right_angle_degrees) or 
+            (right_angle_degrees_down > left_angle_degrees and right_angle_degrees_up < left_angle_degrees)):
+            if ((left_distances[3] < right_distances[3] and left_distances[1] > right_distances[1]) or 
+                (right_distances[3] < left_distances[3] and right_distances[1] > left_distances[1])):
+                result = 4
+        elif ((left_angle_degrees_up > right_angle_degrees and left_angle_degrees_down < right_angle_degrees) or 
+            (right_angle_degrees_up > left_angle_degrees and right_angle_degrees_down < left_angle_degrees)):
+            if ((left_distances[1] < right_distances[1] and left_distances[3] > right_distances[3]) or 
+                (right_distances[1] < left_distances[1] and right_distances[3] > left_distances[3])):
+                result = 3
+        elif ((left_distances[0] < left_distances[2] and left_distances[0] < right_distances[0]) or 
+            (right_distances[2] < right_distances[0] and right_distances[2] < left_distances[2])):
+            if (left_angle_degrees >= 10 or right_angle_degrees >= 10): 
+                result = 2  
+        elif ((left_distances[2] < left_distances[0] and left_distances[2] < right_distances[2]) or 
+            (right_distances[0] < right_distances[2] and right_distances[0] < left_distances[0])):
+            if (left_angle_degrees >= 10 or right_angle_degrees >= 10): 
+                result = 1      
 
         return jsonify({"result": result}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-def diagnose(left_distances, right_distances, left_angle_degrees, right_angle_degrees, left_angle_degrees_up, left_angle_degrees_down, right_angle_degrees_up, right_angle_degrees_down):   
     
-    if ((left_angle_degrees_down > right_angle_degrees and left_angle_degrees_up < right_angle_degrees) or 
-        (right_angle_degrees_down > left_angle_degrees and right_angle_degrees_up < left_angle_degrees)):
-        if ((left_distances[3] < right_distances[3] and left_distances[1] > right_distances[1]) or 
-            (right_distances[3] < left_distances[3] and right_distances[1] > left_distances[1])):
-            return 4
-            
-    elif ((left_angle_degrees_up > right_angle_degrees and left_angle_degrees_down < right_angle_degrees) or 
-          (right_angle_degrees_up > left_angle_degrees and right_angle_degrees_down < left_angle_degrees)):
-        if ((left_distances[1] < right_distances[1] and left_distances[3] > right_distances[3]) or 
-            (right_distances[1] < left_distances[1] and right_distances[3] > left_distances[3])):
-            return 3
-        
-    elif ((left_distances[0] < left_distances[2] and left_distances[0] < right_distances[0]) or 
-        (right_distances[2] < right_distances[0] and right_distances[2] < left_distances[2])):
-        if (left_angle_degrees >= 10 or right_angle_degrees >= 10):   
-            return 2  
-              
-    elif ((left_distances[2] < left_distances[0] and left_distances[2] < right_distances[2]) or 
-        (right_distances[0] < right_distances[2] and right_distances[0] < left_distances[0])):
-        if (left_angle_degrees >= 10 or right_angle_degrees >= 10):       
-            return 1
-    else:
-        return 0
+
 
 @app.route('/', methods=['GET'])
 def get_hello():
     return 'Hello World!'
+
 if __name__ == "__main__":
-    app.run(debug=True,port=10000)
+    app.run(debug=True, port=10000)
