@@ -119,8 +119,8 @@ def detect_face_landmarks(image):
     with mp_face_mesh.FaceMesh(
         max_num_faces=1,
         refine_landmarks=True,
-        min_detection_confidence=0.5,
-        min_tracking_confidence=0.5
+        min_detection_confidence=0.3,
+        min_tracking_confidence=0.3
     ) as face_mesh:
         rgb_frame = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         img_h, img_w = image.shape[:2]
