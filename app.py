@@ -158,8 +158,6 @@ def upload_photo():
 
         left_distances, right_distances, left_angle_degrees, right_angle_degrees, left_angle_degrees_up, left_angle_degrees_down, right_angle_degrees_up, right_angle_degrees_down = landmarks_result
 
-        result = 0  # Initialize result to 0
-    
         if ((left_angle_degrees_down > right_angle_degrees and left_angle_degrees_up < right_angle_degrees) or 
             (right_angle_degrees_down > left_angle_degrees and right_angle_degrees_up < left_angle_degrees)):
             if ((left_distances[3] < right_distances[3] and left_distances[1] > right_distances[1]) or 
@@ -177,7 +175,9 @@ def upload_photo():
         elif ((left_distances[2] < left_distances[0] and left_distances[2] < right_distances[2]) or 
             (right_distances[0] < right_distances[2] and right_distances[0] < left_distances[0])):
             if (left_angle_degrees >= 10 or right_angle_degrees >= 10): 
-                result = 1      
+                result = 1    
+        else:
+                result = 0  
 
         return jsonify({"result": result}), 200
 
