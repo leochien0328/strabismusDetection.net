@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json()); // 解析 JSON 格式的请求体
 app.use(express.urlencoded({ extended: true })); // 解析 URL 编码的请求体
 app.use(cors({
-    origin: 'https://strabismusdetection.com'
+    origin: 'https://strabismusdecation.com/'
 }));
 const apiUrl = process.env.API_URL || 'https://strabismusdetection-net.onrender.com/api/upload-photo'; // 使用 Netlify 設置的環境變量
 app.use('/api', createProxyMiddleware({
