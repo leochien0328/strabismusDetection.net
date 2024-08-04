@@ -2,19 +2,19 @@
 	"siteId": "d0f76faf-be7d-49ad-ab68-5abce86fc47c",
 	"geolocation": {
 		"data": {
-			"city": "Taipei",
+			"city": "Chiayi City",
 			"country": {
 				"code": "TW",
 				"name": "Taiwan"
 			},
 			"subdivision": {
-				"code": "TPE",
-				"name": "Taipei City"
+				"code": "CYI",
+				"name": "Chiayi"
 			},
 			"timezone": "Asia/Taipei",
-			"latitude": 25.0504,
-			"longitude": 121.5324
+			"latitude": 23.4815,
+			"longitude": 120.4498
 		},
-		"timestamp": 1722430027192
+		"timestamp": 1722605594154
 	}
 }
