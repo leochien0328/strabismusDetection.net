@@ -90,22 +90,21 @@ def detect_strabismus(left_distances, right_distances, left_angle_degrees, right
     """Determine the result of strabismus detection based on calculated distances and angles."""
     result = 0
 
-    if ((left_angle_degrees_down < right_angle_degrees and left_angle_degrees < right_angle_degrees) or 
-        (right_angle_degrees_down < left_angle_degrees and right_angle_degrees < left_angle_degrees)):
-        if ((left_distances[3] < right_distances[3] and left_distances[1] > right_distances[1]) or
-            (right_distances[3] < left_distances[3] and right_distances[1] > left_distances[1])):
-            result = 4
+    if ((left_distances[2] < left_distances[0] and left_distances[2] < right_distances[2]) or
+          (right_distances[0] < right_distances[2] and right_distances[0] < left_distances[0])):
+        if (left_angle_degrees >= 10 or right_angle_degrees >= 10):
+            result = 1
+    elif ((left_distances[0] < left_distances[2] and left_distances[0] < right_distances[0]) or
+          (right_distances[2] < right_distances[0] and right_distances[2] < left_distances[2])):
+        if (left_angle_degrees >= 10 or right_angle_degrees >= 10):
+            result = 2
     elif ((left_angle_degrees_up < right_angle_degrees and left_angle_degrees > right_angle_degrees) or 
           (right_angle_degrees_up < left_angle_degrees and right_angle_degrees > left_angle_degrees)):
         if ((left_distances[1] < right_distances[1] and left_distances[3] > right_distances[3]) or
             (right_distances[1] < left_distances[1] and right_distances[3] > left_distances[3])):
             result = 3
-    elif ((left_distances[0] < left_distances[2] and left_distances[0] < right_distances[0]) or
-          (right_distances[2] < right_distances[0] and right_distances[2] < left_distances[2])):
-        if (left_angle_degrees >= 10 or right_angle_degrees >= 10):
-            result = 2
     else:
-        result = 1
+        result = 4
 
     return result
 
