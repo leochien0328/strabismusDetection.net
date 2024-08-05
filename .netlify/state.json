@@ -2,19 +2,19 @@
 	"siteId": "d0f76faf-be7d-49ad-ab68-5abce86fc47c",
 	"geolocation": {
 		"data": {
-			"city": "Chiayi City",
+			"city": "Chiyayi County",
 			"country": {
 				"code": "TW",
 				"name": "Taiwan"
 			},
 			"subdivision": {
-				"code": "CYI",
-				"name": "Chiayi"
+				"code": "CYQ",
+				"name": "Chiyayi County"
 			},
 			"timezone": "Asia/Taipei",
-			"latitude": 23.4815,
-			"longitude": 120.4498
+			"latitude": 23.4461,
+			"longitude": 120.5728
 		},
-		"timestamp": 1722605594154
+		"timestamp": 1722782996791
 	}
 }

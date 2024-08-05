@@ -84,6 +84,35 @@ def detect_face_landmarks(image):
          
         return None
 
+def detect_strabismus(left_distances, right_distances, left_angle_degrees, right_angle_degrees, 
+                      left_angle_degrees_up, left_angle_degrees_down, 
+                      right_angle_degrees_up, right_angle_degrees_down):
+    """Determine the result of strabismus detection based on calculated distances and angles."""
+    result = None
+
+    if ((left_angle_degrees_down < right_angle_degrees and left_angle_degrees < right_angle_degrees) or 
+        (right_angle_degrees_down < left_angle_degrees and right_angle_degrees < left_angle_degrees)):
+        if ((left_distances[3] < right_distances[3] and left_distances[1] > right_distances[1]) or
+            (right_distances[3] < left_distances[3] and right_distances[1] > left_distances[1])):
+            result = 4
+    elif ((left_angle_degrees_up < right_angle_degrees and left_angle_degrees > right_angle_degrees) or 
+          (right_angle_degrees_up < left_angle_degrees and right_angle_degrees > left_angle_degrees)):
+        if ((left_distances[1] < right_distances[1] and left_distances[3] > right_distances[3]) or
+            (right_distances[1] < left_distances[1] and right_distances[3] > left_distances[3])):
+            result = 3
+    elif ((left_distances[0] < left_distances[2] and left_distances[0] < right_distances[0]) or
+          (right_distances[2] < right_distances[0] and right_distances[2] < left_distances[2])):
+        if (left_angle_degrees >= 10 or right_angle_degrees >= 10):
+            result = 2
+    elif ((left_distances[2] < left_distances[0] and left_distances[2] < right_distances[2]) or
+          (right_distances[0] < right_distances[2] and right_distances[0] < left_distances[0])):
+        if (left_angle_degrees >= 10 or right_angle_degrees >= 10):
+            result = 1
+    else:
+        result = 0
+
+    return result
+
 @app.route('/api/upload-photo', methods=['POST'])
 def upload_photo():
     if not request.is_json:
@@ -106,30 +135,12 @@ def upload_photo():
         if landmarks_result is None:
             return jsonify({"error": "No face landmarks detected"}), 400
 
-        left_distances, right_distances, left_angle_degrees, right_angle_degrees, left_angle_degrees_up, left_angle_degrees_down,right_angle_degrees_up, right_angle_degrees_down = landmarks_result
-        result = None
+        left_distances, right_distances, left_angle_degrees, right_angle_degrees, left_angle_degrees_up, left_angle_degrees_down, right_angle_degrees_up, right_angle_degrees_down = landmarks_result
 
-        # Strabismus detection logic (kept as is)
-        if ((left_angle_degrees_down < right_angle_degrees and left_angle_degrees < right_angle_degrees) or 
-            (right_angle_degrees_down < left_angle_degrees and right_angle_degrees < left_angle_degrees)):
-            if ((left_distances[3] < right_distances[3] and left_distances[1] > right_distances[1]) or
-                (right_distances[3] < left_distances[3] and right_distances[1] > left_distances[1])):
-                result = 4
-        elif ((left_angle_degrees_up < right_angle_degrees and left_angle_degrees > right_angle_degrees) or 
-              (right_angle_degrees_up < left_angle_degrees and right_angle_degrees > left_angle_degrees)):
-            if ((left_distances[1] < right_distances[1] and left_distances[3] > right_distances[3]) or
-                (right_distances[1] < left_distances[1] and right_distances[3] > left_distances[3])):
-                result = 3
-        elif ((left_distances[0] < left_distances[2] and left_distances[0] < right_distances[0]) or
-              (right_distances[2] < right_distances[0] and right_distances[2] < left_distances[2])):
-            if (left_angle_degrees >= 10 or right_angle_degrees >= 10):
-                result = 2
-        elif ((left_distances[2] < left_distances[0] and left_distances[2] < right_distances[2]) or
-              (right_distances[0] < right_distances[2] and right_distances[0] < left_distances[0])):
-            if (left_angle_degrees >= 10 or right_angle_degrees >= 10):
-                result = 1
-        else:
-            result = 0
+        result = detect_strabismus(left_distances, right_distances, 
+                                   left_angle_degrees, right_angle_degrees, 
+                                   left_angle_degrees_up, left_angle_degrees_down, 
+                                   right_angle_degrees_up, right_angle_degrees_down)
 
         return jsonify({"result": result}), 200
 
