@@ -27,6 +27,8 @@ def calculate_angle_and_direction(vector):
 
     if vector[0] < 0:
         degrees += 180  # Adjust for second and third quadrants
+    if vector[0] > 0 and vector[1] < 0:
+        degrees = - degrees    
     return degrees
 
 def distance_vector(mesh_points):
@@ -40,26 +42,40 @@ def distance_vector(mesh_points):
     lu, ld, lc = left_iris_pts[1], left_iris_pts[3], left_iris_pts[4]
     ru, rd, rc = right_iris_pts[1], right_iris_pts[3], right_iris_pts[4]
 
+    left_iris_vector = lc - origin
+    right_iris_vector = rc - origin
     left_iris_up_vector = lu - origin
     left_iris_down_vector = ld - origin
     right_iris_up_vector = ru - origin
     right_iris_down_vector = rd - origin
+    #print(left_iris_vector, left_iris_up_vector, left_iris_down_vector, right_iris_vector, right_iris_up_vector, right_iris_down_vector)
+    
 
     # Calculate angles
-    left_angle_degrees = calculate_angle_and_direction(lc - origin)
+    left_angle_degrees = calculate_angle_and_direction(left_iris_vector)
     left_angle_degrees_up = calculate_angle_and_direction(left_iris_up_vector)
     left_angle_degrees_down = calculate_angle_and_direction(left_iris_down_vector)
-    right_angle_degrees = calculate_angle_and_direction(rc - origin)
+    right_angle_degrees = calculate_angle_and_direction(right_iris_vector)
     right_angle_degrees_up = calculate_angle_and_direction(right_iris_up_vector)
-    right_angle_degrees_down = calculate_angle_and_direction(right_iris_down_vector)
+    right_angle_degrees_down = calculate_angle_and_direction(right_iris_down_vector) 
 
-    # Calculate distances
-    left_distances = [np.linalg.norm(lc[:2] - pt[:2]) for pt in left_eye_pts]
-    right_distances = [np.linalg.norm(rc[:2] - pt[:2]) for pt in right_eye_pts]
+    left_vecs = calculate_vectors(lc[:2], left_eye_pts)
+    right_vecs = calculate_vectors(rc[:2], right_eye_pts)
 
-    return (left_distances, right_distances, left_angle_degrees, right_angle_degrees, 
-            left_angle_degrees_up, left_angle_degrees_down, 
-            right_angle_degrees_up, right_angle_degrees_down)
+    left_distances = [np.linalg.norm(vec) for vec in left_vecs]
+    right_distances = [np.linalg.norm(vec) for vec in right_vecs]
+
+    return (left_distances, right_distances, left_angle_degrees, right_angle_degrees, left_angle_degrees_up, 
+            left_angle_degrees_down, right_angle_degrees_up, right_angle_degrees_down)
+
+def calculate_vectors(iris_center, eye_pts):
+    """Calculate vectors from iris to eye boundary points"""
+    return [
+        (iris_center[0] - eye_pts[8][0], iris_center[1] - eye_pts[8][1]),
+        (iris_center[0] - eye_pts[5][0], iris_center[1] - eye_pts[5][1]),
+        (iris_center[0] - eye_pts[0][0], iris_center[1] - eye_pts[0][1]),
+        (iris_center[0] - eye_pts[12][0], iris_center[1] - eye_pts[12][1])
+    ]
 
 def detect_face_landmarks(image):
     """Detect face landmarks and analyze iris positions."""
@@ -97,8 +113,8 @@ def detect_strabismus(left_distances, right_distances, left_angle_degrees, right
           (right_distances[2] < right_distances[0] and right_distances[2] < left_distances[2])):
         if (left_angle_degrees >= 10 or right_angle_degrees >= 10):
             result = 2
-    if ((left_angle_degrees_up < right_angle_degrees and left_angle_degrees > right_angle_degrees) or 
-          (right_angle_degrees_up < left_angle_degrees and right_angle_degrees > left_angle_degrees)):
+    if ((left_angle_degrees_up > right_angle_degrees and left_angle_degrees > right_angle_degrees) or 
+          (right_angle_degrees_up > left_angle_degrees and right_angle_degrees > left_angle_degrees)):
         if ((left_distances[1] < right_distances[1] and left_distances[3] > right_distances[3]) or
             (right_distances[1] < left_distances[1] and right_distances[3] > left_distances[3])):
             result = 3
