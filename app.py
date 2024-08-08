@@ -6,6 +6,7 @@ import numpy as np
 import base64
 from io import BytesIO
 from PIL import Image
+import math
 
 app = Flask(__name__)
 CORS(app)
@@ -19,6 +20,29 @@ RIGHT_EYE = [362, 382, 381, 380, 374, 373, 390, 249, 263, 466, 388, 387, 386, 38
 LEFT_IRIS = [469, 470, 471, 472, 468]
 RIGHT_IRIS = [474, 475, 476, 477, 473]
 NOSE_CENTER = [168, 6, 197]
+
+def eye_coordinates(mesh_points):
+    left_eye_pts = np.array([mesh_points[i] for i in LEFT_EYE])
+    right_eye_pts = np.array([mesh_points[i] for i in RIGHT_EYE])
+
+    # Calculate slopes and intercepts for eye intersections
+    left_k = (left_eye_pts[8][1] - left_eye_pts[0][1]) / (left_eye_pts[8][0] - left_eye_pts[0][0])
+    left_b = left_eye_pts[8][1] - left_k * left_eye_pts[8][0]
+    left_k1 = (left_eye_pts[12][1] - left_eye_pts[4][1]) / (left_eye_pts[12][0] - left_eye_pts[4][0])
+    left_b1 = left_eye_pts[12][1] - left_k1 * left_eye_pts[12][0]
+
+    right_k = (right_eye_pts[0][1] - right_eye_pts[8][1]) / (right_eye_pts[8][0] - right_eye_pts[0][0])
+    right_b = right_eye_pts[8][1] - right_k * right_eye_pts[8][0]
+    right_k1 = (right_eye_pts[12][1] - right_eye_pts[4][1]) / (right_eye_pts[12][0] - right_eye_pts[4][0])
+    right_b1 = right_eye_pts[12][1] - right_k1 * right_eye_pts[12][0]
+
+    left_x_intersection = (left_b1 - left_b) / (left_k - left_k1)
+    left_y_intersection = left_k * left_x_intersection + left_b
+
+    right_x_intersection = (right_b1 - right_b) / (right_k - right_k1)
+    right_y_intersection = right_k * right_x_intersection + right_b
+
+    return [left_x_intersection, left_y_intersection, right_x_intersection, right_y_intersection]
 
 def calculate_angle_and_direction(vector):
     """Calculate the angle of the vector and determine its direction."""
@@ -50,7 +74,7 @@ def distance_vector(mesh_points):
     left_iris_down_vector = ld - origin
     right_iris_up_vector = ru - origin
     right_iris_down_vector = rd - origin
-    #print(left_iris_vector, left_iris_up_vector, left_iris_down_vector, right_iris_vector, right_iris_up_vector, right_iris_down_vector)
+   
     
 
     # Calculate angles
@@ -67,8 +91,11 @@ def distance_vector(mesh_points):
     left_distances = [np.linalg.norm(vec) for vec in left_vecs]
     right_distances = [np.linalg.norm(vec) for vec in right_vecs]
 
+    coordinates = eye_coordinates(mesh_points)
+    solution = distance_vector_from_coordinates(lc, rc, coordinates)
+
     return (left_distances, right_distances, left_angle_degrees, right_angle_degrees, left_angle_degrees_up, 
-            left_angle_degrees_down, right_angle_degrees_up, right_angle_degrees_down)
+            left_angle_degrees_down, right_angle_degrees_up, right_angle_degrees_down, solution)
 
 def calculate_vectors(iris_center, eye_pts):
     """Calculate vectors from iris to eye boundary points"""
@@ -78,6 +105,13 @@ def calculate_vectors(iris_center, eye_pts):
         (iris_center[0] - eye_pts[0][0], iris_center[1] - eye_pts[0][1]),
         (iris_center[0] - eye_pts[12][0], iris_center[1] - eye_pts[12][1])
     ]
+
+def distance_vector_from_coordinates(lc, rc, coordinates):
+    left_distance = math.sqrt((lc[0] - coordinates[0]) ** 2 + (lc[1] - coordinates[1]) ** 2)
+    right_distance = math.sqrt((rc[0] - coordinates[2]) ** 2 + (rc[1] - coordinates[3]) ** 2)
+
+    solution = abs(left_distance - right_distance)
+    return solution
 
 def detect_face_landmarks(image):
     """Detect face landmarks and analyze iris positions."""
@@ -103,28 +137,29 @@ def detect_face_landmarks(image):
         return None
 
 def detect_strabismus(left_distances, right_distances, left_angle_degrees, right_angle_degrees, 
-                      left_angle_degrees_up, left_angle_degrees_down, right_angle_degrees_up, right_angle_degrees_down):
+                      left_angle_degrees_up, left_angle_degrees_down, right_angle_degrees_up, right_angle_degrees_down, solution):
     """Determine the result of strabismus detection based on calculated distances and angles."""
     result = 0
 
-    if ((left_distances[2] < left_distances[0] and left_distances[2] < right_distances[2]) or
-          (right_distances[0] < right_distances[2] and right_distances[0] < left_distances[0])):
-        if (left_angle_degrees >= 10 and right_angle_degrees >= 10):
-            result = 1
-    if ((left_distances[0] < left_distances[2] and left_distances[0] < right_distances[0]) or
-          (right_distances[2] < right_distances[0] and right_distances[2] < left_distances[2])):
-        if (left_angle_degrees >= 10 and right_angle_degrees >= 10):
-            result = 2
-    if ((left_angle_degrees_up > right_angle_degrees and left_angle_degrees > right_angle_degrees) or 
-          (right_angle_degrees_up > left_angle_degrees and right_angle_degrees > left_angle_degrees)):
-        if ((left_distances[1] < right_distances[1] and left_distances[3] > right_distances[3]) or
-            (right_distances[1] < left_distances[1] and right_distances[3] > left_distances[3])):
-            result = 3
-    if ((left_angle_degrees_down < right_angle_degrees and left_angle_degrees < right_angle_degrees) or 
-        (right_angle_degrees_down < left_angle_degrees and right_angle_degrees < left_angle_degrees)):
-        if ((left_distances[3] < right_distances[3] and left_distances[1] > right_distances[1]) or
-            (right_distances[3] < left_distances[3] and right_distances[1] > left_distances[1])):
-            result = 4
+    if(solution > 2.5):
+        if ((left_distances[2] < left_distances[0] and left_distances[2] < right_distances[2]) or
+            (right_distances[0] < right_distances[2] and right_distances[0] < left_distances[0])):
+            if (left_angle_degrees >= 10 and right_angle_degrees >= 10):
+                result = 1
+        if ((left_distances[0] < left_distances[2] and left_distances[0] < right_distances[0]) or
+            (right_distances[2] < right_distances[0] and right_distances[2] < left_distances[2])):
+            if (left_angle_degrees >= 10 and right_angle_degrees >= 10):
+                result = 2
+        if ((left_angle_degrees_up > right_angle_degrees and left_angle_degrees > right_angle_degrees) or 
+            (right_angle_degrees_up > left_angle_degrees and right_angle_degrees > left_angle_degrees)):
+            if ((left_distances[1] < right_distances[1] and left_distances[3] > right_distances[3]) or
+                (right_distances[1] < left_distances[1] and right_distances[3] > left_distances[3])):
+                result = 3
+        if ((left_angle_degrees_down < right_angle_degrees and left_angle_degrees < right_angle_degrees) or 
+            (right_angle_degrees_down < left_angle_degrees and right_angle_degrees < left_angle_degrees)):
+            if ((left_distances[3] < right_distances[3] and left_distances[1] > right_distances[1]) or
+                (right_distances[3] < left_distances[3] and right_distances[1] > left_distances[1])):
+                result = 4
 
     return result
 
@@ -150,12 +185,12 @@ def upload_photo():
         if landmarks_result is None:
             return jsonify({"error": "No face landmarks detected"}), 400
 
-        left_distances, right_distances, left_angle_degrees, right_angle_degrees, left_angle_degrees_up, left_angle_degrees_down, right_angle_degrees_up, right_angle_degrees_down = landmarks_result
+        left_distances, right_distances, left_angle_degrees, right_angle_degrees, left_angle_degrees_up, left_angle_degrees_down, right_angle_degrees_up, right_angle_degrees_down, solution = landmarks_result
 
         result = detect_strabismus(left_distances, right_distances, 
                                    left_angle_degrees, right_angle_degrees, 
                                    left_angle_degrees_up, left_angle_degrees_down, 
-                                   right_angle_degrees_up, right_angle_degrees_down)
+                                   right_angle_degrees_up, right_angle_degrees_down, solution)
 
         return jsonify({"result": result}), 200
 
