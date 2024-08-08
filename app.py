@@ -107,11 +107,11 @@ def detect_strabismus(left_distances, right_distances, left_angle_degrees, right
 
     if ((left_distances[2] < left_distances[0] and left_distances[2] < right_distances[2]) or
           (right_distances[0] < right_distances[2] and right_distances[0] < left_distances[0])):
-        if (left_angle_degrees >= 10 or right_angle_degrees >= 10):
+        if (left_angle_degrees >= 10 and right_angle_degrees >= 10):
             result = 1
     if ((left_distances[0] < left_distances[2] and left_distances[0] < right_distances[0]) or
           (right_distances[2] < right_distances[0] and right_distances[2] < left_distances[2])):
-        if (left_angle_degrees >= 10 or right_angle_degrees >= 10):
+        if (left_angle_degrees >= 10 and right_angle_degrees >= 10):
             result = 2
     if ((left_angle_degrees_up > right_angle_degrees and left_angle_degrees > right_angle_degrees) or 
           (right_angle_degrees_up > left_angle_degrees and right_angle_degrees > left_angle_degrees)):
