@@ -2,19 +2,19 @@
 	"siteId": "d0f76faf-be7d-49ad-ab68-5abce86fc47c",
 	"geolocation": {
 		"data": {
-			"city": "Chiyayi County",
+			"city": "Tainan City",
 			"country": {
 				"code": "TW",
 				"name": "Taiwan"
 			},
 			"subdivision": {
-				"code": "CYQ",
-				"name": "Chiyayi County"
+				"code": "TNN",
+				"name": "Tainan"
 			},
 			"timezone": "Asia/Taipei",
-			"latitude": 23.4461,
-			"longitude": 120.5728
+			"latitude": 22.9917,
+			"longitude": 120.2148
 		},
-		"timestamp": 1722944742895
+		"timestamp": 1723127704401
 	}
 }

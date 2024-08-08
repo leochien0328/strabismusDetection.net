@@ -28,7 +28,9 @@ def calculate_angle_and_direction(vector):
     if vector[0] < 0:
         degrees += 180  # Adjust for second and third quadrants
     if vector[0] > 0 and vector[1] < 0:
-        degrees = - degrees    
+        degrees = - degrees
+    if vector[0] < 0 and vector[1] > 0:
+        degrees = 360 - degrees          
     return degrees
 
 def distance_vector(mesh_points):
