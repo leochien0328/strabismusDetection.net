@@ -49,7 +49,45 @@ document.addEventListener('DOMContentLoaded', function() {
             var raw_image_data = document.getElementById('photoStore').value;
             upload_photo(raw_image_data);
         });
-
+        async function loadModel() {
+            const model = await facemesh.load();
+            detectFace(model);
+        }
+    
+        async function detectFace(model) {
+            const video = document.querySelector('video');
+    
+            function updateDistance(predictions) {
+                if (predictions.length > 0) {
+                    const keypoints = predictions[0].scaledMesh;
+    
+                    // 计算两点之间的距离，这里以两个眼睛之间的距离为例
+                    const leftEye = keypoints[33];
+                    const rightEye = keypoints[263];
+                    const distance = Math.sqrt(
+                        Math.pow(leftEye[0] - rightEye[0], 2) +
+                        Math.pow(leftEye[1] - rightEye[1], 2) +
+                        Math.pow(leftEye[2] - rightEye[2], 2)
+                    );
+    
+                    // 更新距离信息
+                    document.getElementById('distanceInfo').innerText = '脸部距离: ' + distance.toFixed(2);
+                }
+    
+                requestAnimationFrame(() => detectFace(model));
+            }
+    
+            video.addEventListener('loadeddata', () => {
+                updateDistance([]);
+                model.estimateFaces(video).then(predictions => {
+                    updateDistance(predictions);
+                });
+            });
+        }
+    
+        // 开启摄像头后加载模型
+        document.getElementById('accesscamera').addEventListener('click', loadModel);
+        
         async function upload_photo(raw_image_data) {
             try {
                 const response = await fetch('https://strabismusdecation.com/.netlify/functions/upload-photo', {
