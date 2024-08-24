@@ -9,3 +9,17 @@
 .bg-dark{
     background-color: bisque;
 }
+#my_camera {
+    position: relative;
+}
+
+#distanceInfo {
+    position: absolute;
+    bottom: 10px;  /* 距离底部 10 像素 */
+    right: 10px;   /* 距离右边 10 像素 */
+    color: white;  /* 文字颜色 */
+    background-color: rgba(0, 0, 0, 0.5); /* 半透明背景 */
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 1em;
+}
