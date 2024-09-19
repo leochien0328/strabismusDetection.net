@@ -10,25 +10,34 @@ document.addEventListener('DOMContentLoaded', function() {
     const detailsButton = document.getElementById('detailsButton');
 
     if (myCameraElement && accessCameraButton && takePhotoButton && retakePhotoButton && uploadPhotoButton && photoStoreInput && resultsElement) {
-        Webcam.set({
-            width: 320,
-            height: 240,
-            image_format: 'jpeg',
-            jpeg_quality: 90
-        });
+        let videoStream = null;
+        let model = null;
 
-        accessCameraButton.addEventListener('click', function() {
-            Webcam.reset();
-            Webcam.on('error', function() {
+        // 設定視頻元素
+        const video = document.getElementById('webcamVideo');
+
+        // 獲取視頻流
+        accessCameraButton.addEventListener('click', async function() {
+            try {
+                // 獲取用戶的攝像頭視頻流
+                videoStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                video.srcObject = videoStream;
+                video.play();
+
+                // 顯示拍照按鈕
+                takePhotoButton.classList.remove('d-none');
+                takePhotoButton.classList.add('d-block');
+
+                // 加載 facemesh 模型
+                await loadModel();
+            } catch (error) {
+                console.error('Error accessing webcam:', error);
                 swal({
                     title: 'Warning',
-                    text: 'Please give permission to access your webcam',
+                    text: '請允許訪問您的攝像頭。',
                     icon: 'warning'
                 });
-            });
-            Webcam.attach('#my_camera');
-            takePhotoButton.classList.remove('d-none');
-            takePhotoButton.classList.add('d-block');
+            }
         });
 
         takePhotoButton.addEventListener('click', take_snapshot);
@@ -44,49 +53,60 @@ document.addEventListener('DOMContentLoaded', function() {
             uploadPhotoButton.classList.add('d-none');
             uploadPhotoButton.classList.remove('d-block');
         });
-
+        
         uploadPhotoButton.addEventListener('click', function() {
             var raw_image_data = document.getElementById('photoStore').value;
             upload_photo(raw_image_data);
         });
+
         async function loadModel() {
-            const model = await facemesh.load();
-            detectFace(model);
-        }
-    
-        async function detectFace(model) {
-            const video = document.querySelector('video');
-    
-            function updateDistance(predictions) {
-                if (predictions.length > 0) {
-                    const keypoints = predictions[0].scaledMesh;
-    
-                    // 计算两点之间的距离，这里以两个眼睛之间的距离为例
-                    const leftEye = keypoints[33];
-                    const rightEye = keypoints[263];
-                    const distance = Math.sqrt(
-                        Math.pow(leftEye[0] - rightEye[0], 2) +
-                        Math.pow(leftEye[1] - rightEye[1], 2) +
-                        Math.pow(leftEye[2] - rightEye[2], 2)
-                    );
-    
-                    // 更新距离信息
-                    document.getElementById('distanceInfo').innerText = '脸部距离: ' + distance.toFixed(2);
-                }
-    
-                requestAnimationFrame(() => detectFace(model));
-            }
-    
-            video.addEventListener('loadeddata', () => {
-                updateDistance([]);
-                model.estimateFaces(video).then(predictions => {
-                    updateDistance(predictions);
+            try {
+                model = await facemesh.load();
+                detectFace();
+            } catch (error) {
+                console.error('Error loading facemesh model:', error);
+                swal({
+                    title: 'Error',
+                    text: '無法加載面部檢測模型。',
+                    icon: 'error'
                 });
-            });
+            }
         }
     
-        // 开启摄像头后加载模型
-        document.getElementById('accesscamera').addEventListener('click', loadModel);
+        async function detectFace() {
+            if (!model) {
+                console.error('Facemesh model not loaded.');
+                return;
+            }
+
+            async function update() {
+                if (video.readyState >= 2) { // HAVE_CURRENT_DATA
+                    try {
+                        const predictions = await model.estimateFaces(video);
+                        
+                        if (predictions.length > 0) {
+                            const keypoints = predictions[0].scaledMesh;
+                            const leftEye = keypoints[33];
+                            const rightEye = keypoints[263];
+                            const distance = Math.sqrt(
+                                Math.pow(leftEye[0] - rightEye[0], 2) +
+                                Math.pow(leftEye[1] - rightEye[1], 2) +
+                                Math.pow(leftEye[2] - rightEye[2], 2)
+                            );
+                            document.getElementById('distanceInfo').innerText = '眼睛距離: ' + distance.toFixed(2);
+                        } else {
+                            document.getElementById('distanceInfo').innerText = '未檢測到面部';
+                        }
+                    } catch (error) {
+                        console.error('Error during face detection:', error);
+                        document.getElementById('distanceInfo').innerText = '檢測出錯';
+                    }
+                }
+                requestAnimationFrame(update);
+            }
+
+            update();
+        }
         
         async function upload_photo(raw_image_data) {
             try {
@@ -126,14 +146,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         function take_snapshot() {
-            Webcam.snap(function(data_uri) {
-                document.getElementById('results').innerHTML = '<img src="' + data_uri + '" class="d-block mx-auto rounded"/>';
-                var raw_image_data = data_uri.replace(/^data:image\/\w+;base64,/, '');
-                while (raw_image_data.length % 4 !== 0) {
-                    raw_image_data += '=';
-                }
-                document.getElementById('photoStore').value = raw_image_data;
-            });
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const data_uri = canvas.toDataURL('image/jpeg');
+            document.getElementById('results').innerHTML = '<img src="' + data_uri + '" class="d-block mx-auto rounded"/>';
+            var raw_image_data = data_uri.replace(/^data:image\/\w+;base64,/, '');
+            while (raw_image_data.length % 4 !== 0) {
+                raw_image_data += '=';
+            }
+            document.getElementById('photoStore').value = raw_image_data;
 
             myCameraElement.classList.remove('d-block');
             myCameraElement.classList.add('d-none');
@@ -145,27 +169,19 @@ document.addEventListener('DOMContentLoaded', function() {
             uploadPhotoButton.classList.remove('d-none');
             uploadPhotoButton.classList.add('d-block');
         }
-        document.getElementById('photoForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const photoStore = document.getElementById('photoStore').value;
-
-            const response = await fetch('/.netlify/functions/upload-photo', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ image: photoStore })
-            });
-
-            const result = await response.json();
-            console.log(result);
-        });
     } else {
         console.error('One or more elements not found.');
     }
 
     if (detailsButton) {
         detailsButton.classList.add('singular');
+        detailsButton.addEventListener('click', function() {
+            swal({
+                title: 'Details',
+                text: '這裡可以顯示更多詳細信息。',
+                icon: 'info'
+            });
+        });
     } else {
         console.error('Element with id "detailsButton" not found.');
     }
