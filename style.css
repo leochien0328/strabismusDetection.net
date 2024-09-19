@@ -7,7 +7,7 @@
 }
 
 .custom-bg { /* 使用自定義背景類 */
-    background-color: bisque;
+    background-color: rgb(27, 25, 24);
 }
 
 #my_camera {
@@ -26,5 +26,5 @@
     padding: 5px 10px;
     border-radius: 5px;
     font-size: 1.2em; /* 調整字體大小 */
-    background-color: rgba(255, 255, 255, 0.7); /* 添加半透明背景以增強可讀性 */
+    background-color: rgba(17, 16, 16, 0.7); /* 添加半透明背景以增強可讀性 */
 }

@@ -20,7 +20,15 @@ document.addEventListener('DOMContentLoaded', function() {
         accessCameraButton.addEventListener('click', async function() {
             try {
                 // 獲取用戶的攝像頭視頻流
-                videoStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                videoStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: { ideal: 640 }, 
+                        height: { ideal: 480 }, 
+                        facingMode: 'user', 
+                        frameRate: { ideal: 30 }, 
+                    },
+                    audio:false
+                });
                 video.srcObject = videoStream;
                 video.play();
 
@@ -53,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
             uploadPhotoButton.classList.add('d-none');
             uploadPhotoButton.classList.remove('d-block');
         });
-        
+
         uploadPhotoButton.addEventListener('click', function() {
             var raw_image_data = document.getElementById('photoStore').value;
             upload_photo(raw_image_data);
