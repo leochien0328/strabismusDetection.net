@@ -102,7 +102,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                 Math.pow(leftEye[1] - rightEye[1], 2) +
                                 Math.pow(leftEye[2] - rightEye[2], 2)
                             );
-                            document.getElementById('distanceInfo').innerText = '眼睛距離: ' + distance.toFixed(2);
+                            const zdistance = (leftEye[2]+rightEye[2])/2;
+                            const conversionFactor = 0.1;
+                            const distanceToCamera = Math.abs(zdistance*conversionFactor);
+
+                            document.getElementById('distanceInfo').innerText = '距離相機: ' + distanceToCamera.toFixed(2)+'cm';
                         } else {
                             document.getElementById('distanceInfo').innerText = '未檢測到面部';
                         }
