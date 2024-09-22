@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     video: { 
                         width: { ideal: 640 }, 
                         height: { ideal: 480 }, 
+                        aspectRatio: 4/3,
                         facingMode: 'user', 
                         frameRate: { ideal: 30 }, 
                     },

@@ -12,8 +12,10 @@
 
 #my_camera {
     position: relative;
-    width: 320px; /* 設置寬度以適應視頻 */
-    height: 240px; /* 設置高度以適應視頻 */
+    aspect-ratio: 4/3;
+    max-width: 640px;
+    width: 100%; /* 設置寬度以適應視頻 */
+    height: auto; /* 設置高度以適應視頻 */
     overflow: hidden;
     border-radius: 10px;
 }
