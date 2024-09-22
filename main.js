@@ -97,14 +97,14 @@ document.addEventListener('DOMContentLoaded', function() {
                             const keypoints = predictions[0].scaledMesh;
                             const leftEye = keypoints[33];
                             const rightEye = keypoints[263];
-                            const distance = Math.sqrt(
+                            const eyedistance = Math.sqrt(
                                 Math.pow(leftEye[0] - rightEye[0], 2) +
                                 Math.pow(leftEye[1] - rightEye[1], 2) +
                                 Math.pow(leftEye[2] - rightEye[2], 2)
                             );
-                            const zdistance = (leftEye[2]+rightEye[2])/2;
-                            const conversionFactor = 0.1;
-                            const distanceToCamera = Math.abs(zdistance*conversionFactor);
+                            const actualEyeDistance = 6.3; // 厘米
+                            const focalLength = 600;
+                            const distanceToCamera = (actualEyeDistance * focalLength) / eyedistance;
 
                             document.getElementById('distanceInfo').innerText = '距離相機: ' + distanceToCamera.toFixed(2)+'cm';
                         } else {
