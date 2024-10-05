@@ -21,14 +21,22 @@ exports.handler = async (event) => {
 
         const apiUrl = process.env.API_URL || 'https://strabismusdetection-net.onrender.com/api/upload-photo';
 
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': '70bdf7dde1abcefebd3f83b09656e340'  // 添加 API Key
-            },
-            body: JSON.stringify({ image: image })
-        });
+        const response = await Promise.race([
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': '70bdf7dde1abcefebd3f83b09656e340'  // 添加 API Key
+                },
+                body: JSON.stringify({ image })
+            }),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), 5000))
+        ]);
+
+
+        if (!response.ok) {
+            throw new Error(`API responded with status: ${response.status}`);
+        }
 
         const result = await response.json();
 
