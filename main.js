@@ -107,6 +107,15 @@ document.addEventListener('DOMContentLoaded', function() {
                             const distanceToCamera = (actualEyeDistance * focalLength) / eyedistance;
 
                             document.getElementById('distanceInfo').innerText = '距離相機: ' + distanceToCamera.toFixed(2)+'cm';
+                            if (distanceToCamera>=30 && distanceToCamera<=32 ){
+                                //開啟拍照按鈕並顯示"有效距離，可以拍照"
+                                takePhotoButton.disabled=false;
+                                document.getElementById('distanceInfo').innerText+='有效距離，可以拍照';
+                            }else{
+                                //關閉拍照按鈕"無效距離請調整"
+                                takePhotoButton.disabled=true;
+                                document.getElementById('distanceInfo').innerText+='無效距離請調整';
+                            }
                         } else {
                             document.getElementById('distanceInfo').innerText = '未檢測到面部';
                         }
