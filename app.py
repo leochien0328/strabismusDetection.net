@@ -185,31 +185,26 @@ def reflection_dia(La, Lb, Lc, Ld, Le, Lau, Lbu, Ldd, Led,
     result = 0
     # Diagnosis logic based on the calculated values
     if ((left_dia_h[0] == right_dia_h[0] and left_dia_v[0] != right_dia_v[0]) or
-        (left_dia_h[1] >= 15 or right_dia_h[1] >= 15 or left_dia_v[1] >= 15 or right_dia_v[1] >= 15)):
+        (left_dia_h[1] > 15 or right_dia_h[1] > 15 or left_dia_v[1] > 15 or right_dia_v[1] > 15)):
         # Exotropia
         if left_dia_h[0] == 1 and right_dia_h[0] == 1:
-            result = 1
-        elif (left_dia_h[0] == 1 and left_dia_h[1] >= 15) or (right_dia_h[0] == 1 and right_dia_h[1] >= 15):
-            result = 1
+            if (left_dia_h[0] == 1 and left_dia_h[1] > 15) or (right_dia_h[0] == 1 and right_dia_h[1] > 15):
+                result = 1
         # Esotropia
         if left_dia_h[0] == 2 and right_dia_h[0] == 2:
-            result = 2
-        elif (left_dia_h[0] == 2 and left_dia_h[1] >= 15) or (right_dia_h[0] == 2 and right_dia_h[1] >= 15):
-            result = 2
+            if (left_dia_h[0] == 2 and left_dia_h[1] > 15) or (right_dia_h[0] == 2 and right_dia_h[1] > 15):
+                result = 2
         # Hypotropia
         if left_dia_v[0] == 3 and right_dia_v[0] != 3:
-            result = 3
-        elif (left_dia_v[0] == 3 and left_dia_v[1] >= 15) or (right_dia_v[0] == 3 and right_dia_v[1] >= 15):
-            result = 3
+            if (left_dia_v[0] == 3 and left_dia_v[1] > 15) or (right_dia_v[0] == 3 and right_dia_v[1] > 15):
+                result = 3
         # Hypertropia
         if left_dia_v[0] == 4 and right_dia_v[0] != 4:
-            result = 4
-        elif (left_dia_v[0] == 4 and left_dia_v[1] >= 15) or (right_dia_v[0] == 4 and right_dia_v[1] >= 15):
-            result = 4
+            if (left_dia_v[0] == 4 and left_dia_v[1] > 15) or (right_dia_v[0] == 4 and right_dia_v[1] > 15):
+                result = 4
     else:
         result = 0  # No diagnosis possible
-    return result    
-
+    return result
 def calculate_angle_and_direction(vector):
     angle = np.arctan2(vector[1], vector[0])
     degrees = np.degrees(angle)
@@ -233,6 +228,7 @@ def distance_vector_from_coordinates(lc, rc, coordinates):
         (rc[0] - coordinates[2]) ** 2 + (rc[1] - coordinates[3]) ** 2)
     solution = abs(left_distance - right_distance)
     return solution
+
 def calculate_intersection(mesh_points):
     left_eye_pts = np.array([mesh_points[i] for i in LEFT_EYE])
     right_eye_pts = np.array([mesh_points[i] for i in RIGHT_EYE])
@@ -421,8 +417,7 @@ def upload_photo():
 
         if landmarks_result is None:
             return jsonify({"error": "No face landmarks detected"}), 400
-
-        # Unpack all the variables
+         #Unpack all the variables
         left_distances, right_distances, left_angle_degrees, right_angle_degrees, \
         left_angle_degrees_up, left_angle_degrees_down, right_angle_degrees_up, right_angle_degrees_down, \
         solution, La, Lb, Lc, Ld, Le, Lau, Lbu, Ldd, Led, \
