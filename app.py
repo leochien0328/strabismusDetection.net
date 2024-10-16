@@ -410,6 +410,7 @@ def upload_photo():
         h, w = image.shape[:2]
         new_w = 640
         new_h = int((new_w / w) * h)
+        image = cv2.flip(image, 1)
         image = cv2.resize(image, (new_w, new_h))
         landmarks_result = detect_face_landmarks(image)
 
