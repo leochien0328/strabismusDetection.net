@@ -202,8 +202,6 @@ def reflection_dia(La, Lb, Lc, Ld, Le, Lau, Lbu, Ldd, Led,
         if left_dia_v[0] == 4 and right_dia_v[0] != 4:
             if (left_dia_v[0] == 4 and left_dia_v[1] > 15) or (right_dia_v[0] == 4 and right_dia_v[1] > 15):
                 result = 4
-    else:
-        result = 0  # No diagnosis possible
     return result
 def calculate_angle_and_direction(vector):
     angle = np.arctan2(vector[1], vector[0])
