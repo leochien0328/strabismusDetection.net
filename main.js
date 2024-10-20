@@ -156,6 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if(data.result==0){
                     $('#noStrabismusModal').modal('show');
                 }
+                console.log('Solution:', data.solution);
             } catch (error) {
                 console.error('Error:', error);
                 swal({

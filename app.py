@@ -444,7 +444,7 @@ def upload_photo():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
+
 @app.route('/', methods=['GET'])
 def get_hello():
     return 'Hello World!'
