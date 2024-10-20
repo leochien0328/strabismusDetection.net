@@ -444,12 +444,12 @@ def upload_photo():
             left_flash, right_flash
         )
         # Determine 'dia' based on 'iris_result'
-        dia = 1 if iris_result else 0    
-
         if (left_flash[0] is None) or (right_flash[0] is None):
             result = iris_result 
+            dia = 0
         else:    
             result = reflection_result
+            dia = 1
 
         
         return jsonify({"result": result, "dia":dia}), 200
