@@ -71,6 +71,8 @@ def iris_catch(left_iris, right_iris):
 
 def left_horizontal_diagnose(La, Lb, Lc, Ld, Le, left_flash):
     left_dia_h = [0, 0]
+    if left_flash is None:
+        return left_dia_h
     if Lc[0] == left_flash[0]:
         left_dia_h = [0, 0]
     elif Lc[0] > left_flash[0]:  # eso
@@ -91,6 +93,8 @@ def left_horizontal_diagnose(La, Lb, Lc, Ld, Le, left_flash):
 
 def left_vertical_diagnose(Lau, Lbu, Ldd, Led, Lc, left_flash):
     left_dia_v = [0, 0]
+    if left_flash is None:
+        return left_dia_v
     if Lc[1] == left_flash[1]:
         left_dia_v = [0, 0]
     elif Lc[1] > left_flash[1]:  # hypo
@@ -111,6 +115,8 @@ def left_vertical_diagnose(Lau, Lbu, Ldd, Led, Lc, left_flash):
 
 def right_horizontal_diagnose(Ra, Rb, Rc, Rd, Re, right_flash):
     right_dia_h = [0, 0]
+    if right_flash is None:
+        return right_dia_h
     if Rc[0] == right_flash[0]:
         right_dia_h = [0, 0]
     elif Rc[0] < right_flash[0]:  # eso
@@ -131,6 +137,8 @@ def right_horizontal_diagnose(Ra, Rb, Rc, Rd, Re, right_flash):
 
 def right_vertical_diagnose(Rau, Rbu, Rdd, Red, Rc, right_flash):
     right_dia_v = [0, 0]
+    if right_flash is None:
+        return right_dia_v
     if Rc[1] == right_flash[1]:
         right_dia_v = [0, 0]
     elif Rc[1] > right_flash[1]:  # hypo
@@ -438,9 +446,13 @@ def upload_photo():
         # Determine 'dia' based on 'iris_result'
         dia = 1 if iris_result else 0    
 
-        result = iris_result or reflection_result
+        if (left_flash[0] is None) or (right_flash[0] is None):
+            result = iris_result 
+        else:    
+            result = reflection_result
 
-        return jsonify({"result": result}, {"dia":dia}), 200
+        
+        return jsonify({"result": result, "dia":dia}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
