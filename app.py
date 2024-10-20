@@ -188,19 +188,19 @@ def reflection_dia(La, Lb, Lc, Ld, Le, Lau, Lbu, Ldd, Led,
         (left_dia_h[1] > 15 or right_dia_h[1] > 15 or left_dia_v[1] > 15 or right_dia_v[1] > 15)):
         # Exotropia
         if left_dia_h[0] == 1 and right_dia_h[0] == 1:
-            if (left_dia_h[0] == 1 and left_dia_h[1] > 15) or (right_dia_h[0] == 1 and right_dia_h[1] > 15):
+            if (left_dia_h[0] == 1 and left_dia_h[1] > 15) or (right_dia_h[0] == 1 and right_dia_h[1] > 15) or ((left_dia_h[0] == 1 and right_dia_h[0] == 1) and (left_dia_h[1] + right_dia_h[1]) >15):
                 result = 1
         # Esotropia
         if left_dia_h[0] == 2 and right_dia_h[0] == 2:
-            if (left_dia_h[0] == 2 and left_dia_h[1] > 15) or (right_dia_h[0] == 2 and right_dia_h[1] > 15):
+            if (left_dia_h[0] == 2 and left_dia_h[1] > 15) or (right_dia_h[0] == 2 and right_dia_h[1] > 15) or ((left_dia_h[0] == 2 and right_dia_h[0] == 2) and (left_dia_h[1] + right_dia_h[1]) >15):
                 result = 2
         # Hypotropia
         if left_dia_v[0] == 3 and right_dia_v[0] != 3:
-            if (left_dia_v[0] == 3 and left_dia_v[1] > 15) or (right_dia_v[0] == 3 and right_dia_v[1] > 15):
+            if (left_dia_v[0] == 3 and left_dia_v[1] > 15) or (right_dia_v[0] == 3 and right_dia_v[1] > 15) or ((left_dia_v[0] == 3 and right_dia_v[0] != 3) and (left_dia_v[1] + right_dia_v[1] > 15)):
                 result = 3
         # Hypertropia
         if left_dia_v[0] == 4 and right_dia_v[0] != 4:
-            if (left_dia_v[0] == 4 and left_dia_v[1] > 15) or (right_dia_v[0] == 4 and right_dia_v[1] > 15):
+            if (left_dia_v[0] == 4 and left_dia_v[1] > 15) or (right_dia_v[0] == 4 and right_dia_v[1] > 15) or ((left_dia_v[0] == 4 and right_dia_v[0] != 4) and (left_dia_v[1] + right_dia_v[1] > 15)):
                 result = 4
     return result
 def calculate_angle_and_direction(vector):
@@ -410,13 +410,14 @@ def upload_photo():
         h, w = image.shape[:2]
         new_w = 640
         new_h = int((new_w / w) * h)
-        image = cv2.flip(image, 1)
         image = cv2.resize(image, (new_w, new_h))
+        image = cv2.flip(image, 1)
         landmarks_result = detect_face_landmarks(image)
 
         if landmarks_result is None:
             return jsonify({"error": "No face landmarks detected"}), 400
-         #Unpack all the variables
+
+        # Unpack all the variables
         left_distances, right_distances, left_angle_degrees, right_angle_degrees, \
         left_angle_degrees_up, left_angle_degrees_down, right_angle_degrees_up, right_angle_degrees_down, \
         solution, La, Lb, Lc, Ld, Le, Lau, Lbu, Ldd, Led, \
@@ -434,14 +435,16 @@ def upload_photo():
             Ra, Rb, Rc, Rd, Re, Rau, Rbu, Rdd, Red,
             left_flash, right_flash
         )
+        # Determine 'dia' based on 'iris_result'
+        dia = 1 if iris_result else 0    
 
         result = iris_result or reflection_result
 
-        return jsonify({"result": result}), 200
+        return jsonify({"result": result}, {"dia":dia}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
+    
 @app.route('/', methods=['GET'])
 def get_hello():
     return 'Hello World!'
